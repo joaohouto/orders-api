@@ -1,5 +1,9 @@
 # Application Specifictions
 
+## The main problem
+
+John wants to sell t-shirts for his classmates, but he doesn't have a solid way to do this. He has about 150 college mates, and handle 150 sells it's hard. So, he wants a place where he can accept orders and payments, and export reports about all the sells.
+
 ## Use Cases
 
 - Users must be able to sign up/in;
