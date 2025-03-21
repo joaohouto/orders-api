@@ -29,6 +29,7 @@ John wants to sell t-shirts for his classmates, but he doesn't have a solid way 
 - Page
 
   - owner
+  - slug
   - name
   - icon
   - banner

@@ -28,3 +28,6 @@ app.get("/", (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+//https://github.com/stuyy/google-oauth2-node-express/blob/master/src/strategies/google.ts
