@@ -1,33 +1,22 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import dotenv from "dotenv";
 
-import { ExpressAuth } from "@auth/express"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "@/database/prisma"
-import Google from "@auth/express/providers/google"
+import passport from "@/auth/passport";
+import authRoutes from "@/auth/auth.routes";
+import userRoutes from "@/modules/user/user.routes";
+import storeRoutes from "@/modules/store/store.routes";
+import collaboratorRoutes from "@/modules/collaborator/collaborator.routes";
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.use(express.json());
+app.use(passport.initialize());
 
-app.set("trust proxy", true)
-app.use(
-  "/auth/*",
-  ExpressAuth({
-    providers: [Google],
-    adapter: PrismaAdapter(prisma),
-  })
-)
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
-// callback url [origin]/auth/callback/google
+app.use("/stores", storeRoutes);
+app.use("/", collaboratorRoutes);
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Welcome to the Node.js + TypeScript API!");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-
-//https://github.com/stuyy/google-oauth2-node-express/blob/master/src/strategies/google.ts
+app.listen(3000, () => console.log("🚀 Server on http://localhost:3000"));
