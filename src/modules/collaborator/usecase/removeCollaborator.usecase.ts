@@ -24,12 +24,23 @@ export async function removeCollaborator({
     throw new Error("O dono não pode se remover");
   }
 
-  console.log(userIdToRemove);
-
-  await prisma.collaborator.deleteMany({
+  const found = await prisma.collaborator.findFirst({
     where: {
       storeId,
       userId: userIdToRemove,
+    },
+  });
+
+  if (!found) {
+    throw new Error("O usuário informado não é colaborador");
+  }
+
+  await prisma.collaborator.delete({
+    where: {
+      storeId_userId: {
+        storeId,
+        userId: userIdToRemove,
+      },
     },
   });
 

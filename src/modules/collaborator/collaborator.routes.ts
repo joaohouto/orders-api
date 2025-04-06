@@ -8,6 +8,7 @@ import { addCollaboratorSchema } from "./schema/addCollaborator.schema";
 
 import { listCollaboratorsController } from "./controller/listCollaborators.controller";
 import { removeCollaboratorController } from "./controller/removeCollaborator.controller";
+import { updateCollaboratorRoleController } from "./controller/updateCollaboratorRole.controller";
 
 const router = Router();
 
@@ -28,6 +29,12 @@ router.delete(
   "/stores/:storeId/collaborators/:userId",
   authMiddleware,
   removeCollaboratorController
+);
+
+router.patch(
+  "/stores/:storeId/collaborators/:userId/role",
+  authMiddleware,
+  updateCollaboratorRoleController
 );
 
 export default router;

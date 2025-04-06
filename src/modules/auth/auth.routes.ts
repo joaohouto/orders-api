@@ -1,6 +1,6 @@
 import { Router } from "express";
-import passport from "@/auth/passport";
-import { generateToken } from "@/auth/jwt";
+import passport from "@/modules/auth/passport";
+import { generateToken } from "@/modules/auth/jwt";
 
 const router = Router();
 

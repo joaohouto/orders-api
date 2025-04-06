@@ -9,12 +9,12 @@ export const addCollaboratorController = async (
   const storeId = req.params.storeId;
 
   if (!user) return res.status(401).json({ msg: "Não autenticado" });
-  const { userIdToAdd, role } = req.body;
+  const { userEmailToAdd, role } = req.body;
 
   try {
     const result = await addCollaborator({
       storeId,
-      userIdToAdd,
+      userEmailToAdd,
       role,
       requesterId: user.id,
     });

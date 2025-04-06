@@ -2,17 +2,26 @@ import { prisma } from "@/prisma/client";
 
 interface AddCollaboratorDTO {
   storeId: string;
-  userIdToAdd: string;
+  userEmailToAdd: string;
   role: "VIEW" | "EDIT";
   requesterId: string;
 }
 
 export async function addCollaborator({
   storeId,
-  userIdToAdd,
+  userEmailToAdd,
   role,
   requesterId,
 }: AddCollaboratorDTO) {
+  // 1. Busca o usuário pelo e-mail
+  const userToAdd = await prisma.user.findUnique({
+    where: { email: userEmailToAdd },
+  });
+
+  if (!userToAdd) {
+    throw new Error("Usuário com esse e-mail não foi encontrado.");
+  }
+
   // 1. Verifica se requester é dono da loja
   const store = await prisma.store.findUnique({
     where: { id: storeId },
@@ -29,7 +38,7 @@ export async function addCollaborator({
     where: {
       storeId_userId: {
         storeId,
-        userId: userIdToAdd,
+        userId: userToAdd.id,
       },
     },
   });
@@ -39,7 +48,7 @@ export async function addCollaborator({
   }
 
   // 3. Impede a auto adição como colaborador
-  if (store.ownerId === userIdToAdd) {
+  if (store.ownerId === userToAdd.id) {
     throw new Error("Usuário já é o dono da loja.");
   }
 
@@ -47,7 +56,7 @@ export async function addCollaborator({
   const collaborator = await prisma.collaborator.create({
     data: {
       storeId,
-      userId: userIdToAdd,
+      userId: userToAdd.id,
       role,
     },
   });

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
 export const addCollaboratorSchema = z.object({
-  userIdToAdd: z.string().min(1),
+  userEmailToAdd: z.string().email("E-mail inválido"),
   role: z.enum(["VIEW", "EDIT"]),
 });
