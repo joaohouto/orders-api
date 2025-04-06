@@ -1,0 +1,753 @@
+type: collection.insomnia.rest/5.0
+name: Orders
+meta:
+  id: wrk_182bc520c2884237a39ac09e2fdc9327
+  created: 1736643721231
+  modified: 1742767037235
+collection:
+  - name: User
+    meta:
+      id: fld_900076c07c6b4378888ca56590f985ab
+      created: 1743781269779
+      modified: 1743893276089
+      sortKey: -1743781269780
+    children:
+      - url: "{{ _.base_url }}/users/profile"
+        name: Update profile
+        meta:
+          id: req_56a1be8421564906b554b858af36cc76
+          created: 1743866931969
+          modified: 1743869407997
+          isPrivate: false
+          sortKey: -1743866931969
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "João Henrique Martins Couto",
+            	"phone": "5567992378640"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtOTRkNDJjczAwMDBpNXIxZzQ0MjlqcmUiLCJlbWFpbCI6ImpvYW9jb3V0by5qYXJAZ21haWwuY29tIiwibmFtZSI6Ikpvw6NvIENvdXRvIiwiYXZhdGFyIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTGwzcVY4bEFmeDNLNnJQelZVc2lRVFQwRVNWNzdxM3VHbUV1eER4ME5QZ094YzFGRjBoQT1zOTYtYyIsInBob25lIjpudWxsLCJpYXQiOjE3NDM4NjcwNjksImV4cCI6MTc0NjQ1OTA2OX0.NCKV1pK3lc_ALNJh7yxVV8iuPBGww0jI3Wf3ODFwnI0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Store
+    meta:
+      id: fld_187aeb73731a45f58ec0aaaddeeeb75f
+      created: 1743869434335
+      modified: 1743869434335
+      sortKey: -1743869434335
+    children:
+      - url: "{{ _.base_url }}/stores"
+        name: Create
+        meta:
+          id: req_6c3a6ef0715e4736b8f494498520b0f2
+          created: 1743869436507
+          modified: 1743900792314
+          isPrivate: false
+          sortKey: -1743869436507
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Direito Aquidauana",
+            	"slug": "direitoaq",
+            	"instagram": "direitoaquidauana"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/collaborators"
+        name: Add collaborator
+        meta:
+          id: req_ee83b049102c4dbdb5314a47ade488c2
+          created: 1743870870535
+          modified: 1743892031205
+          isPrivate: false
+          sortKey: -1743868184238
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"userEmailToAdd": "joaohtml.adm@gmail.com",
+            	"role": "VIEW"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/collaborators"
+        name: List collaborators
+        meta:
+          id: req_cfd52bdb20ee405fbf02a3887d5deb69
+          created: 1743873593839
+          modified: 1743892068399
+          isPrivate: false
+          sortKey: -1743868105971.1875
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/stores/cm94f73uw0001i507watdb6ym/collaborators/cm94d57vs0002i5r1u0\
+          gqb9c8"
+        name: Remove collaborator
+        meta:
+          id: req_0fccd3f61d804eacb766b5317f719493
+          created: 1743873952695
+          modified: 1743876397557
+          isPrivate: false
+          sortKey: -1743868066837.7812
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/stores/cm94f73uw0001i507watdb6ym/collaborators/cm94d57vs0002i5r1u0\
+          gqb9c8/role"
+        name: Update collaborator role
+        meta:
+          id: req_6f3b7391af7646ceab1f24e9b26cb66a
+          created: 1743876337415
+          modified: 1743892077710
+          isPrivate: false
+          sortKey: -1743868027704.375
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"role": "EDIT"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym"
+        name: Update
+        meta:
+          id: req_cb9a09f4af07400290c3257965e2d66d
+          created: 1743900749124
+          modified: 1743901238178
+          isPrivate: false
+          sortKey: -1743869123439.75
+        method: PUT
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"name": "Direito Aquidauana",
+            	"slug": "direitoaquidauana",
+            	"instagram": "direitoaquidauana",
+            	"icon": "https://cjdalhfeglnwfctmhjmb.supabase.co/storage/v1/object/public/orders-files//6cfef33f-f2e7-4708-a689-ff63985fe678.png"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/mine"
+        name: List user stores
+        meta:
+          id: req_07c47388174746168d2b216b3ff806bd
+          created: 1743901490927
+          modified: 1743901499467
+          isPrivate: false
+          sortKey: -1743868653838.875
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Product
+    meta:
+      id: fld_b95f7f423e87428999ce5b88c6e695d6
+      created: 1743879710323
+      modified: 1743886151793
+      sortKey: -1743825352057.5
+    children:
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/products"
+        name: Create
+        meta:
+          id: req_fd3c900e18f047b8afad28b4492f57f7
+          created: 1743879710328
+          modified: 1743900898676
+          isPrivate: false
+          sortKey: -1743869436507
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Camidfsdseta",
+              "slug": "camiseta-sdfs9",
+              "description": "",
+              "images": [
+                "https://cdn.site.com/moletom1.jpg"
+              ],
+              "variations": [
+                { "name": "Padrão", "price": 89.9 }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/products"
+        name: List products
+        meta:
+          id: req_673af5287ec84cf5a80925951a30a572
+          created: 1743880368140
+          modified: 1743884959507
+          isPrivate: false
+          sortKey: -1743880368140
+        method: GET
+        parameters:
+          - id: pair_71251900479f41ee910f2714da27b01d
+            name: page
+            value: "1"
+            disabled: false
+          - id: pair_638b6848d59f4495a4b5afc70aa81b58
+            name: limit
+            value: "10"
+            disabled: false
+          - id: pair_77639860e6b24e00864470dd0ac6e3ee
+            name: q
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/products/moletom-foda"
+        name: List one product
+        meta:
+          id: req_4b8150a5e2254946804dc32575145a9c
+          created: 1743881801760
+          modified: 1743886196598
+          isPrivate: false
+          sortKey: -1743874902323.5
+        method: GET
+        parameters:
+          - id: pair_135a3b1dd5b143368dcbd7ed0e98fd2e
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/stores/cm94f73uw0001i507watdb6ym/products/cm94l00dc0001i5ojiyiz33p\
+          y"
+        name: Update
+        meta:
+          id: req_157d853b33134954bef67766b6bebb84
+          created: 1743882285148
+          modified: 1743884994674
+          isPrivate: false
+          sortKey: -1743868810372.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Moletom Foda",
+            	"slug": "moletom-foda",
+            	"description": "Quentinho e estiloso",
+            	"images": [
+            		"https://cdn.site.com/moletom1.jpg"
+            	],
+            	"variations": [
+            		{
+            			"name": "P",
+            			"price": 89.9
+            		},
+            		{
+            			"name": "M",
+            			"price": 94.9
+            		},
+            		{
+            			"name": "G",
+            			"price": 94.9
+            		},
+            		{
+            			"name": "XG",
+            			"price": 94.9
+            		},
+            		{
+            			"name": "XXG",
+            			"price": 94.9
+            		}
+            	]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/products/cm94lizxn000pi58ne6b2c4kk"
+        name: Delete
+        meta:
+          id: req_71af13fcdb0545119c90828a2e0196fa
+          created: 1743884762106
+          modified: 1743884773477
+          isPrivate: false
+          sortKey: -1743868497305.25
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Order
+    meta:
+      id: fld_3d57d0e45af64490afdc49c7f31c9a52
+      created: 1743886033303
+      modified: 1743886033303
+      sortKey: -1743803310918.75
+    children:
+      - url: "{{ _.base_url }}/orders"
+        name: Create
+        meta:
+          id: req_5b9580395f13491b94303de3ac9e46dd
+          created: 1743886033305
+          modified: 1743889767793
+          isPrivate: false
+          sortKey: -1743880368240
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "storeId": "cm94f73uw0001i507watdb6ym",
+              "items": [
+                {
+                  "productId": "cm94l00dc0001i5ojiyiz33py",
+                  "variationId": "cm94o3mnl0002i5gnlrignty5",
+                  "quantity": 1,
+            		"note": "Número 10"
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/stores/cm94f73uw0001i507watdb6ym/orders"
+        name: List store orders
+        meta:
+          id: req_2131fdced9644bc3bf7c605c47c7cda6
+          created: 1743886033310
+          modified: 1743887909019
+          isPrivate: false
+          sortKey: -1743880368140
+        method: GET
+        parameters:
+          - id: pair_3f6ff48d3be444e690b03fbb0958fd9c
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/me/orders"
+        name: List user orders
+        meta:
+          id: req_2922145aafdb49e6a039ae33fa70883d
+          created: 1743887884276
+          modified: 1743887896834
+          isPrivate: false
+          sortKey: -1743877635231.75
+        method: GET
+        parameters:
+          - id: pair_a12706c1d6ce4464826d8d8554400197
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/orders/cm94qxysm0001i5dfrcywa39v/status"
+        name: Change order status
+        meta:
+          id: req_d5cc98211d7b467a8b864fd8156c9054
+          created: 1743889151542
+          modified: 1743889784386
+          isPrivate: false
+          sortKey: -1743876268777.625
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"status": "CONFIRMED"
+            }
+        parameters:
+          - id: pair_a12706c1d6ce4464826d8d8554400197
+            disabled: false
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/orders/cm94qxysm0001i5dfrcywa39v/cancel"
+        name: Cancel order
+        meta:
+          id: req_63cbc3dc425d4faa9a56620524cee730
+          created: 1743890019752
+          modified: 1743890079965
+          isPrivate: false
+          sortKey: -1743876268677.625
+        method: PATCH
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: File
+    meta:
+      id: fld_fcf9ffdf353f4a56bf8e9eca0dd122c2
+      created: 1743893281316
+      modified: 1743893281316
+      sortKey: -1743781269730
+    children:
+      - url: "{{ _.base_url }}/files/upload"
+        name: Update profile
+        meta:
+          id: req_365b879165654dc0ab4fbaf10d31890c
+          created: 1743893281317
+          modified: 1743900901278
+          isPrivate: false
+          sortKey: -1743866931969
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - id: pair_bc63a3a75a244f3984bb20698119b0b2
+              name: file
+              disabled: false
+              type: file
+              fileName: /home/joao/Documentos/www/orders-web/public/icon.png
+            - id: pair_3bb36baff20648cd8913faf2204d3969
+              name: storeId
+              disabled: false
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/11.0.0
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtOTRkNDJjczAwMDBpNXIxZzQ0MjlqcmUiLCJlbWFpbCI6ImpvYW9jb3V0by5qYXJAZ21haWwuY29tIiwibmFtZSI6Ikpvw6NvIENvdXRvIiwiYXZhdGFyIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTGwzcVY4bEFmeDNLNnJQelZVc2lRVFQwRVNWNzdxM3VHbUV1eER4ME5QZ094YzFGRjBoQT1zOTYtYyIsInBob25lIjpudWxsLCJpYXQiOjE3NDM4NjcwNjksImV4cCI6MTc0NjQ1OTA2OX0.NCKV1pK3lc_ALNJh7yxVV8iuPBGww0jI3Wf3ODFwnI0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - url: "{{ _.base_url }}/auth/google"
+    name: Auth
+    meta:
+      id: req_ca2102997e094bc78bc1ddc01e555421
+      created: 1742769716863
+      modified: 1743781256815
+      isPrivate: false
+      sortKey: -1742769716863
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.0.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_40f120a38a92bb7f611426b3de969f90bd8a8b27
+    created: 1742767037321
+    modified: 1743867006237
+  cookies:
+    - key: auth_verification
+      value: "%7B%22nonce%22%3A%22BqRRfUaEeCBeB4hAh-qGGG4bSvDTrfcQ7-mDCAC8f1Y%22%2C%2\
+        2state%22%3A%22eyJyZXR1cm5UbyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9%22%7D.N\
+        53S11j-8ffJcVkXSOpCNjzW4vacFygmY_BlrT_qdH4"
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.303Z
+      lastAccessed: 2025-04-02T15:28:51.303Z
+      sameSite: none
+      id: 049843df-9ea9-47de-9a78-d677874dacec
+    - key: _auth_verification
+      value: "%7B%22nonce%22%3A%22BqRRfUaEeCBeB4hAh-qGGG4bSvDTrfcQ7-mDCAC8f1Y%22%2C%2\
+        2state%22%3A%22eyJyZXR1cm5UbyI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJ9%22%7D.-\
+        LAL4VWW4lwrI1THwVrQFGyY3HOTHN76gY6rTXAIHqI"
+      domain: localhost
+      path: /
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.305Z
+      lastAccessed: 2025-04-02T15:28:51.305Z
+      id: 638961cc-49df-44d7-8d16-dd9e65089959
+    - key: did
+      value: s%3Av0%3A9e51cc61-96c8-409b-a376-f68cd261490d.0zeFZWUqHEUphYm6dDp1C%2BMwVWfvm9gZdYvxsHb0lO8
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.308Z
+      lastAccessed: 2025-04-02T15:28:51.308Z
+      sameSite: none
+      id: 288fdf90-2df9-4789-96d1-0632d4eec54d
+    - key: auth0
+      value: s%3Av1.gadzZXNzaW9ugqZoYW5kbGXEQAWLhLE2wtNekEr2HvSFNG7ZZ68IpiuLl1Pf45wa0prjcGDYRBagZm1kYn4plB_HOVEG9E7f8ebxl1W6hNBz1lGmY29va2llg6dleHBpcmVz1_8k9HMAZ_FMMq5vcmlnaW5hbE1heEFnZc4PcxQAqHNhbWVTaXRlpG5vbmU.rc06uPDu5pLKRVYIVQvAbYFefWxxoyG7wyjsF3Qk%2FZE
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.310Z
+      lastAccessed: 2025-04-02T15:28:51.310Z
+      sameSite: none
+      id: 4a1232c6-5185-4e95-8171-649dd64d86f5
+    - key: did_compat
+      value: s%3Av0%3A9e51cc61-96c8-409b-a376-f68cd261490d.0zeFZWUqHEUphYm6dDp1C%2BMwVWfvm9gZdYvxsHb0lO8
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.311Z
+      lastAccessed: 2025-04-02T15:28:51.311Z
+      id: 7a25565c-3d5b-45e2-935c-7596934b0f37
+    - key: auth0_compat
+      value: s%3Av1.gadzZXNzaW9ugqZoYW5kbGXEQAWLhLE2wtNekEr2HvSFNG7ZZ68IpiuLl1Pf45wa0prjcGDYRBagZm1kYn4plB_HOVEG9E7f8ebxl1W6hNBz1lGmY29va2llg6dleHBpcmVz1_8k9HMAZ_FMMq5vcmlnaW5hbE1heEFnZc4PcxQAqHNhbWVTaXRlpG5vbmU.rc06uPDu5pLKRVYIVQvAbYFefWxxoyG7wyjsF3Qk%2FZE
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: true
+      creation: 2025-04-02T15:28:51.311Z
+      lastAccessed: 2025-04-02T15:28:51.311Z
+      id: 5cbf95cf-ed48-4119-a3a5-ef520e7df028
+    - key: __Host-GAPS
+      value: 1:UNyhtMS9UePUL58jb6TfGePT5eTt6Q:U7y5BCil31QjP5lh
+      domain: localhost
+      path: /
+      secure: true
+      httpOnly: true
+      extensions:
+        - Priority=HIGH
+      hostOnly: true
+      creation: 2025-04-04T15:40:59.969Z
+      lastAccessed: 2025-04-05T15:30:06.236Z
+      id: dbac2701-23f0-4de2-a99d-5607590fa6c1
+environments:
+  name: Base Environment
+  meta:
+    id: env_40f120a38a92bb7f611426b3de969f90bd8a8b27
+    created: 1736643721240
+    modified: 1743889352541
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtOTRkNDJjczAwMDBpNXIxZzQ0MjlqcmUiLCJlbWFpbCI6ImpvYW9jb3V0by5qYXJAZ21haWwuY29tIiwibmFtZSI6Ikpvw6NvIENvdXRvIiwiYXZhdGFyIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTGwzcVY4bEFmeDNLNnJQelZVc2lRVFQwRVNWNzdxM3VHbUV1eER4ME5QZ094YzFGRjBoQT1zOTYtYyIsInBob25lIjoiNTU2Nzk5MjM3ODY0MCIsImlhdCI6MTc0Mzg4OTMzMCwiZXhwIjoxNzQ2NDgxMzMwfQ.8PBxbvSi_oV7vUL9US4U1mwPipZYRDQH5s0vmi5cOdg
