@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import passport from "@/modules/auth/passport";
 import authRoutes from "@/modules/auth/auth.routes";
@@ -13,6 +14,7 @@ import fileRoutes from "@/modules/file/file.routes";
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
 

@@ -28,7 +28,6 @@ passport.use(
           email: user.email,
         },
         update: {
-          name: user.name,
           avatar: user.avatar,
         },
         create: {

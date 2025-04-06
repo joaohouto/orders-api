@@ -16,6 +16,8 @@ router.get(
     const user = req.user;
     const token = generateToken(user);
 
+    res.redirect(`${process.env.WEB_CLIENT_URL}/auth?token=${token}`);
+
     res.json({ user, token });
   }
 );
