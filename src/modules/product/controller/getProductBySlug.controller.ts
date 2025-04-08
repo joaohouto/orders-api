@@ -5,10 +5,10 @@ export const getProductBySlugController = async (
   req: Request,
   res: Response
 ) => {
-  const { storeId, slug } = req.params;
+  const { storeSlug, productSlug } = req.params;
 
   try {
-    const product = await getProductBySlug(storeId, slug);
+    const product = await getProductBySlug(storeSlug, productSlug);
     return res.json(product);
   } catch (err: any) {
     return res

@@ -6,7 +6,9 @@ const router = Router();
 
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
 );
 
 router.get(
@@ -18,7 +20,7 @@ router.get(
 
     res.redirect(`${process.env.WEB_CLIENT_URL}/auth?token=${token}`);
 
-    res.json({ user, token });
+    //res.json({ user, token });
   }
 );
 

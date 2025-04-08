@@ -7,6 +7,8 @@ import { createStoreController } from "./controller/createStore.controller";
 import { createStoreSchema } from "./schema/createStore.schema";
 import { updateStoreController } from "./controller/updateStore.controller";
 import { listUserStoresController } from "./controller/listUserStores.controller";
+import { viewOneStoreController } from "./controller/viewOneStore.controller";
+import { listAllStoresController } from "./controller/listAllStores.controller";
 
 const router = Router();
 
@@ -17,7 +19,9 @@ router.post(
   createStoreController
 );
 
+router.get("/", listAllStoresController);
 router.get("/mine", authMiddleware, listUserStoresController);
+router.get("/:storeSlug", viewOneStoreController);
 
 router.put("/:storeId", authMiddleware, updateStoreController);
 

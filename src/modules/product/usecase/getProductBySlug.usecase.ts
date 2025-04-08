@@ -1,10 +1,22 @@
 import { prisma } from "@/prisma/client";
 
-export async function getProductBySlug(storeId: string, slug: string) {
+export async function getProductBySlug(storeSlug: string, productSlug: string) {
+  const store = await prisma.store.findUnique({
+    where: { slug: storeSlug },
+  });
+
+  if (!store) throw new Error("Loja não encontrada");
+
   const product = await prisma.product.findFirst({
-    where: { storeId, slug, deletedAt: null },
+    where: { storeId: store.id, slug: productSlug, deletedAt: null },
     include: {
       variations: true,
+      store: {
+        select: {
+          name: true,
+          icon: true,
+        },
+      },
     },
   });
 

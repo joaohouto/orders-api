@@ -7,6 +7,7 @@ const schema = z.object({
   slug: z.string().min(1),
   description: z.string().optional(),
   images: z.array(z.string().url()).optional(),
+  acceptOrderNote: z.boolean(),
   variations: z
     .array(
       z.object({

@@ -12,6 +12,7 @@ interface CreateProductInput {
   description?: string;
   images?: string[];
   storeId: string;
+  acceptOrderNote: boolean;
   variations: VariationInput[];
   requesterId: string;
 }
@@ -22,6 +23,7 @@ export async function createProduct({
   description,
   images,
   storeId,
+  acceptOrderNote,
   variations,
   requesterId,
 }: CreateProductInput) {
@@ -53,6 +55,7 @@ export async function createProduct({
       description,
       images,
       storeId,
+      acceptOrderNote,
       variations: {
         create: variations.map((v) => ({
           name: v.name,

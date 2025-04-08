@@ -1,22 +1,30 @@
 import { prisma } from "@/prisma/client";
 
 interface ListProductsParams {
-  storeId: string;
+  storeSlug: string;
   page?: number;
   limit?: number;
   search?: string;
 }
 
 export async function getProducts({
-  storeId,
+  storeSlug,
   page = 1,
   limit = 10,
   search,
 }: ListProductsParams) {
   const skip = (page - 1) * limit;
 
+  const store = await prisma.store.findUnique({
+    where: {
+      slug: storeSlug,
+    },
+  });
+
+  if (!store) throw new Error("Loja não encontrada");
+
   const where = {
-    storeId,
+    storeId: store.id,
     deletedAt: null,
     name: search ? { contains: search, mode: "insensitive" } : undefined,
   };
@@ -24,7 +32,7 @@ export async function getProducts({
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
-      //include: { variations: true },
+      include: { variations: true },
       skip,
       take: limit,
       orderBy: { createdAt: "desc" },

@@ -2,7 +2,6 @@ import { prisma } from "@/prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 type CreateOrderInput = {
-  storeId: string;
   items: {
     productId: string;
     variationId: string;
@@ -11,8 +10,12 @@ type CreateOrderInput = {
   }[];
 };
 
-export async function createOrder(data: CreateOrderInput, userId: string) {
-  const { storeId, items } = data;
+export async function createOrder(
+  data: CreateOrderInput,
+  storeId: string,
+  userId: string
+) {
+  const { items } = data;
 
   const store = await prisma.store.findUnique({
     where: { id: storeId },

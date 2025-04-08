@@ -9,7 +9,7 @@ import { cancelOrderController } from "./controller/cancelOrder.controller";
 
 const router = Router();
 
-router.post("/orders", authMiddleware, createOrderController);
+router.post("/stores/:storeId/orders", authMiddleware, createOrderController);
 router.get("/stores/:storeId/orders", authMiddleware, getStoreOrdersController);
 router.get("/me/orders", authMiddleware, getUserOrdersController);
 

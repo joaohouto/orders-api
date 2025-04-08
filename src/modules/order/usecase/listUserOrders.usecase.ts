@@ -6,7 +6,15 @@ export async function listUserOrders(userId: string) {
       userId,
     },
     include: {
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              images: true,
+            },
+          },
+        },
+      },
       store: {
         select: {
           id: true,

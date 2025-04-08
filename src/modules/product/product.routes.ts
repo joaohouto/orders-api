@@ -15,8 +15,13 @@ router.post(
   createProductController
 );
 
-router.get("/stores/:storeId/products", getProductsController);
-router.get("/stores/:storeId/products/:slug", getProductBySlugController);
+router.get("/stores/:storeSlug/products", getProductsController);
+
+router.get(
+  "/stores/:storeSlug/products/:productSlug",
+  getProductBySlugController
+);
+
 router.put(
   "/stores/:storeId/products/:productId",
   authMiddleware,
