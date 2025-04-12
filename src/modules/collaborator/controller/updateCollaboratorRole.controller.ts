@@ -13,8 +13,7 @@ export const updateCollaboratorRoleController = async (
   res: Response
 ) => {
   const user = req.user;
-  const storeId = req.params.storeId;
-  const userIdToUpdate = req.params.userId;
+  const { storeSlug, userId } = req.params;
 
   if (!user) return res.status(401).json({ msg: "Não autenticado" });
 
@@ -27,8 +26,8 @@ export const updateCollaboratorRoleController = async (
 
   try {
     const result = await updateCollaboratorRole({
-      storeId,
-      userIdToUpdate,
+      storeSlug,
+      userIdToUpdate: userId,
       newRole: parsed.data.role,
       requesterId: user.id,
     });

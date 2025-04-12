@@ -11,7 +11,7 @@ interface CreateProductInput {
   slug: string;
   description?: string;
   images?: string[];
-  storeId: string;
+  storeSlug: string;
   acceptOrderNote: boolean;
   variations: VariationInput[];
   requesterId: string;
@@ -22,13 +22,13 @@ export async function createProduct({
   slug,
   description,
   images,
-  storeId,
+  storeSlug,
   acceptOrderNote,
   variations,
   requesterId,
 }: CreateProductInput) {
   const store = await prisma.store.findUnique({
-    where: { id: storeId },
+    where: { slug: storeSlug },
     include: { owner: true },
   });
 
@@ -38,7 +38,7 @@ export async function createProduct({
 
   const isEditor = await prisma.collaborator.findFirst({
     where: {
-      storeId,
+      storeId: store.id,
       userId: requesterId,
       role: CollaboratorRoles.EDIT,
     },
@@ -54,7 +54,7 @@ export async function createProduct({
       slug,
       description,
       images,
-      storeId,
+      storeId: store.id,
       acceptOrderNote,
       variations: {
         create: variations.map((v) => ({

@@ -20,7 +20,7 @@ const schema = z.object({
 
 export const createProductController = async (req: Request, res: Response) => {
   const user = req.user;
-  const storeId = req.params.storeId;
+  const { storeSlug } = req.params;
 
   if (!user) return res.status(401).json({ msg: "Não autenticado" });
 
@@ -35,7 +35,7 @@ export const createProductController = async (req: Request, res: Response) => {
     const product = await createProduct({
       ...parsed.data,
       requesterId: user.id,
-      storeId,
+      storeSlug,
     });
 
     res.status(201).json(product);

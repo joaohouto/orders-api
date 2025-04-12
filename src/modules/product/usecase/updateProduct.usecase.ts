@@ -4,20 +4,28 @@ import { checkPermission } from "@/core/permission/checkPermission";
 import { Decimal } from "@prisma/client/runtime/library";
 
 interface Params {
-  storeId: string;
-  productId: string;
+  storeSlug: string;
+  productSlug: string;
   requesterId: string;
   data: UpdateProductInput;
 }
 
 export async function updateProduct({
-  storeId,
-  productId,
+  storeSlug,
+  productSlug,
   requesterId,
   data,
 }: Params) {
+  const store = await prisma.store.findUnique({
+    where: {
+      slug: storeSlug,
+    },
+  });
+
+  if (!store) throw new Error("Loja não encontrada");
+
   const hasPermission = await checkPermission({
-    storeId,
+    storeId: store.id,
     userId: requesterId,
     allowedRoles: ["OWNER", "EDIT"],
   });
@@ -25,13 +33,13 @@ export async function updateProduct({
   if (!hasPermission) throw new Error("Sem permissão");
 
   const existing = await prisma.product.findFirst({
-    where: { storeId, slug: data.slug, NOT: { id: productId } },
+    where: { storeId: store.id, slug: data.slug, NOT: { slug: productSlug } },
   });
 
   if (existing) throw new Error("Slug já em uso");
 
   const updated = await prisma.product.update({
-    where: { id: productId },
+    where: { slug: productSlug },
     data: {
       name: data.name,
       slug: data.slug,

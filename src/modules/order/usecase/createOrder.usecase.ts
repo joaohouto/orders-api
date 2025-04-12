@@ -1,3 +1,4 @@
+import { sendOrderEmail } from "@/lib/resend";
 import { prisma } from "@/prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
@@ -72,6 +73,7 @@ export async function createOrder(
     },
     include: {
       items: true,
+      user: true,
     },
   });
 
@@ -85,6 +87,13 @@ export async function createOrder(
   });
 
   // enviar email com os dados do pedido
+  await sendOrderEmail({
+    orderId: order.id,
+    items: orderItems,
+    name: order.user.name,
+    to: order.user.email,
+    total: order.totalPrice,
+  });
 
   return order;
 }

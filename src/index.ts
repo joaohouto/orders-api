@@ -10,6 +10,7 @@ import collaboratorRoutes from "@/modules/collaborator/collaborator.routes";
 import productRoutes from "@/modules/product/product.routes";
 import orderRoutes from "@/modules/order/order.routes";
 import fileRoutes from "@/modules/file/file.routes";
+import paymentRoutes from "@/modules/payment/payment.routes";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/stores", storeRoutes);
 app.use("/", collaboratorRoutes);
 app.use("/", productRoutes);
 app.use("/", orderRoutes);
+app.use("/", paymentRoutes);
 app.use("/", fileRoutes);
 
 app.listen(3000, () => console.log("🚀 Server on http://localhost:3000"));

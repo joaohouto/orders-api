@@ -1,21 +1,22 @@
 import { prisma } from "@/prisma/client";
 
 interface RemoveCollaboratorDTO {
-  storeId: string;
+  storeSlug: string;
   userIdToRemove: string;
   requesterId: string;
 }
 
 export async function removeCollaborator({
-  storeId,
+  storeSlug,
   userIdToRemove,
   requesterId,
 }: RemoveCollaboratorDTO) {
   const store = await prisma.store.findUnique({
-    where: { id: storeId },
+    where: { slug: storeSlug },
   });
 
   if (!store) throw new Error("Loja não encontrada");
+
   if (store.ownerId !== requesterId)
     throw new Error("Apenas o dono pode remover colaboradores");
 
@@ -26,7 +27,7 @@ export async function removeCollaborator({
 
   const found = await prisma.collaborator.findFirst({
     where: {
-      storeId,
+      storeId: store.id,
       userId: userIdToRemove,
     },
   });
@@ -38,7 +39,7 @@ export async function removeCollaborator({
   await prisma.collaborator.delete({
     where: {
       storeId_userId: {
-        storeId,
+        storeId: store.id,
         userId: userIdToRemove,
       },
     },

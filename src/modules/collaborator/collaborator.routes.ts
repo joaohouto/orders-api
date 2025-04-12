@@ -13,26 +13,26 @@ import { updateCollaboratorRoleController } from "./controller/updateCollaborato
 const router = Router();
 
 router.post(
-  "/stores/:storeId/collaborators",
+  "/stores/:storeSlug/collaborators",
   authMiddleware,
   validate(addCollaboratorSchema),
   addCollaboratorController
 );
 
 router.get(
-  "/stores/:storeId/collaborators",
+  "/stores/:storeSlug/collaborators",
   authMiddleware,
   listCollaboratorsController
 );
 
 router.delete(
-  "/stores/:storeId/collaborators/:userId",
+  "/stores/:storeSlug/collaborators/:userId",
   authMiddleware,
   removeCollaboratorController
 );
 
 router.patch(
-  "/stores/:storeId/collaborators/:userId/role",
+  "/stores/:storeSlug/collaborators/:userId/role",
   authMiddleware,
   updateCollaboratorRoleController
 );

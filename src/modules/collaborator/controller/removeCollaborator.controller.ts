@@ -6,15 +6,14 @@ export const removeCollaboratorController = async (
   res: Response
 ) => {
   const user = req.user;
-  const storeId = req.params.storeId;
-  const userIdToRemove = req.params.userId;
+  const { storeSlug, userId } = req.params;
 
   if (!user) return res.status(401).json({ msg: "Não autenticado" });
 
   try {
     const result = await removeCollaborator({
-      storeId,
-      userIdToRemove,
+      storeSlug,
+      userIdToRemove: userId,
       requesterId: user.id,
     });
 

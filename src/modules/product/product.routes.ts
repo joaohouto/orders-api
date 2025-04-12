@@ -10,7 +10,7 @@ import { deleteProductController } from "./controller/deleteProduct.controller";
 const router = Router();
 
 router.post(
-  "/stores/:storeId/products",
+  "/stores/:storeSlug/products",
   authMiddleware,
   createProductController
 );
@@ -23,7 +23,7 @@ router.get(
 );
 
 router.put(
-  "/stores/:storeId/products/:productId",
+  "/stores/:storeSlug/products/:productSlug",
   authMiddleware,
   updateProductController
 );

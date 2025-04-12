@@ -6,19 +6,26 @@ import { getStoreOrdersController } from "./controller/listStoreOrders.controlle
 import { getUserOrdersController } from "./controller/getUserOrders.controller";
 import { updateOrderStatusController } from "./controller/updateOrderStatus.controller";
 import { cancelOrderController } from "./controller/cancelOrder.controller";
+import { payOrderController } from "./controller/payOrder.controller";
 
 const router = Router();
 
 router.post("/stores/:storeId/orders", authMiddleware, createOrderController);
-router.get("/stores/:storeId/orders", authMiddleware, getStoreOrdersController);
 router.get("/me/orders", authMiddleware, getUserOrdersController);
+router.patch("/orders/:orderId/cancel", authMiddleware, cancelOrderController);
+
+router.get("/orders/:orderId/payment", authMiddleware, payOrderController);
+
+router.get(
+  "/stores/:storeSlug/orders",
+  authMiddleware,
+  getStoreOrdersController
+);
 
 router.patch(
   "/orders/:orderId/status",
   authMiddleware,
   updateOrderStatusController
 );
-
-router.patch("/orders/:orderId/cancel", authMiddleware, cancelOrderController);
 
 export default router;

@@ -1,14 +1,14 @@
 import { prisma } from "@/prisma/client";
 
 interface AddCollaboratorDTO {
-  storeId: string;
+  storeSlug: string;
   userEmailToAdd: string;
   role: "VIEW" | "EDIT";
   requesterId: string;
 }
 
 export async function addCollaborator({
-  storeId,
+  storeSlug,
   userEmailToAdd,
   role,
   requesterId,
@@ -24,7 +24,7 @@ export async function addCollaborator({
 
   // 1. Verifica se requester é dono da loja
   const store = await prisma.store.findUnique({
-    where: { id: storeId },
+    where: { slug: storeSlug },
   });
 
   if (!store || store.ownerId !== requesterId) {

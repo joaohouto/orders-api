@@ -3,7 +3,7 @@ import { updateProduct } from "../usecase/updateProduct.usecase";
 import { updateProductSchema } from "../schema/updateProduct.shema";
 
 export const updateProductController = async (req: Request, res: Response) => {
-  const { storeId, productId } = req.params;
+  const { storeSlug, productSlug } = req.params;
   const user = req.user;
 
   const parsed = updateProductSchema.safeParse(req.body);
@@ -15,8 +15,8 @@ export const updateProductController = async (req: Request, res: Response) => {
 
   try {
     const updated = await updateProduct({
-      storeId,
-      productId,
+      storeSlug,
+      productSlug,
       requesterId: user.id,
       data: parsed.data,
     });

@@ -1,18 +1,19 @@
 import { prisma } from "@/prisma/client";
 
 interface ListCollaboratorsDTO {
-  storeId: string;
+  storeSlug: string;
   requesterId: string;
 }
 
 export async function listCollaborators({
-  storeId,
+  storeSlug,
   requesterId,
 }: ListCollaboratorsDTO) {
   // Verifica se o requester tem acesso à loja
   const store = await prisma.store.findUnique({
-    where: { id: storeId },
+    where: { slug: storeSlug },
     include: {
+      owner: true,
       collaborators: {
         include: {
           user: true,
@@ -32,11 +33,23 @@ export async function listCollaborators({
     throw new Error("Acesso negado");
   }
 
-  return store.collaborators.map((c) => ({
+  const list = store.collaborators.map((c) => ({
     id: c.id,
     userId: c.userId,
     name: c.user.name,
     email: c.user.email,
     role: c.role,
+    avatar: c.avatar,
   }));
+
+  list.unshift({
+    id: "owner",
+    userId: store.owner.id,
+    name: store.owner.name,
+    email: store.owner.email,
+    avatar: store.owner.avatar,
+    role: "OWNER",
+  });
+
+  return list;
 }

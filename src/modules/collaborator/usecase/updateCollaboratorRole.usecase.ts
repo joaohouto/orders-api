@@ -3,20 +3,20 @@ import { prisma } from "@/prisma/client";
 import type { CollaboratorRole } from "@/shared/enums/collaboratorRole";
 
 interface UpdateCollaboratorRoleDTO {
-  storeId: string;
+  storeSlug: string;
   userIdToUpdate: string;
   newRole: CollaboratorRole;
   requesterId: string;
 }
 
 export async function updateCollaboratorRole({
-  storeId,
+  storeSlug,
   userIdToUpdate,
   newRole,
   requesterId,
 }: UpdateCollaboratorRoleDTO) {
   const store = await prisma.store.findUnique({
-    where: { id: storeId },
+    where: { slug: storeSlug },
   });
 
   if (!store) throw new Error("Loja não encontrada");
@@ -30,7 +30,7 @@ export async function updateCollaboratorRole({
   const collaborator = await prisma.collaborator.findUnique({
     where: {
       storeId_userId: {
-        storeId,
+        storeId: store.id,
         userId: userIdToUpdate,
       },
     },
@@ -41,7 +41,7 @@ export async function updateCollaboratorRole({
   const updated = await prisma.collaborator.update({
     where: {
       storeId_userId: {
-        storeId,
+        storeId: store.id,
         userId: userIdToUpdate,
       },
     },
