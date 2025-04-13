@@ -48,7 +48,7 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
         pending: `${process.env.WEB_CLIENT_URL}/orders?status=pending`,
       },
       notification_url:
-        "https://ed6b-138-255-224-234.ngrok-free.app/webhook/mercadopago",
+        "https://c7f9-2804-28f4-8b00-4c7-dd76-713b-f87a-5773.ngrok-free.app/webhook/mercadopago",
       payer: {
         email: order.user.email,
       },

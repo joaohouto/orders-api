@@ -39,7 +39,7 @@ export async function listCollaborators({
     name: c.user.name,
     email: c.user.email,
     role: c.role,
-    avatar: c.avatar,
+    avatar: c.user.avatar,
   }));
 
   list.unshift({

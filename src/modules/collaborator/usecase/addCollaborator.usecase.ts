@@ -37,7 +37,7 @@ export async function addCollaborator({
   const exists = await prisma.collaborator.findUnique({
     where: {
       storeId_userId: {
-        storeId,
+        storeId: store.id,
         userId: userToAdd.id,
       },
     },
@@ -53,13 +53,23 @@ export async function addCollaborator({
   }
 
   // 4.  Cria colaborador
-  const collaborator = await prisma.collaborator.create({
+  const c = await prisma.collaborator.create({
     data: {
-      storeId,
+      storeId: store.id,
       userId: userToAdd.id,
       role,
     },
+    include: {
+      user: true,
+    },
   });
 
-  return collaborator;
+  return {
+    id: c.id,
+    userId: c.userId,
+    name: c.user.name,
+    email: c.user.email,
+    role: c.role,
+    avatar: c.user.avatar,
+  };
 }

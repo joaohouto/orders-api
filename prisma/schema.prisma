@@ -56,6 +56,7 @@ model Collaborator {
 enum StoreRole {
   VIEW
   EDIT
+  OWNER
 }
 
 model Product {
@@ -63,11 +64,12 @@ model Product {
   name            String
   slug            String      @unique
   description     String?
-  images          String[] // aqui o array
+  images          String[]
   storeId         String
   store           Store       @relation(fields: [storeId], references: [id])
   variations      Variation[]
   acceptOrderNote Boolean     @default(false)
+  isActive        Boolean     @default(true)
   deletedAt       DateTime?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

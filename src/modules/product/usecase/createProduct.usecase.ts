@@ -24,6 +24,7 @@ export async function createProduct({
   images,
   storeSlug,
   acceptOrderNote,
+  isActive,
   variations,
   requesterId,
 }: CreateProductInput) {
@@ -55,6 +56,7 @@ export async function createProduct({
       description,
       images,
       storeId: store.id,
+      isActive,
       acceptOrderNote,
       variations: {
         create: variations.map((v) => ({

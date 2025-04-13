@@ -44,6 +44,8 @@ export async function updateProduct({
       name: data.name,
       slug: data.slug,
       images: data.images,
+      isActive: data.isActive,
+      description: data.description,
       variations: {
         deleteMany: {},
         create: data.variations.map((v) => ({
