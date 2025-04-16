@@ -13,10 +13,14 @@ export const getProductsController = async (req: Request, res: Response) => {
       search: q as string | undefined,
     });
 
-    return res.json(result);
+    res.json(result);
+
+    return;
   } catch (err: any) {
-    return res
+    res
       .status(500)
       .json({ msg: "Erro ao listar produtos", error: err.message });
+
+    return;
   }
 };

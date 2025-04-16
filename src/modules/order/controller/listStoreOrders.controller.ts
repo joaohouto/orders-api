@@ -5,14 +5,17 @@ export async function getStoreOrdersController(req: Request, res: Response) {
   const userId = req.user?.id;
   const { storeSlug } = req.params;
 
-  console.log(storeSlug);
-
-  if (!userId) return res.status(401).json({ error: "Não autenticado" });
+  if (!userId) {
+    res.status(401).json({ error: "Não autenticado" });
+    return;
+  }
 
   try {
     const orders = await listStoreOrders(storeSlug, userId);
-    return res.json(orders);
+    res.json(orders);
+    return;
   } catch (err: any) {
-    return res.status(403).json({ error: err.message });
+    res.status(403).json({ error: err.message });
+    return;
   }
 }

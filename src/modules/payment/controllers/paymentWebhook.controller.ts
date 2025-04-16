@@ -26,9 +26,11 @@ export async function paymentWebHook(req: Request, res: Response) {
       }
     }
 
-    return res.status(200).json({ ok: true });
+    res.status(200).json({ ok: true });
+    return;
   } catch (error) {
     console.error("Erro no webhook de pagamento:", error);
-    return res.status(500).json({ ok: false });
+    res.status(500).json({ ok: false });
+    return;
   }
 }

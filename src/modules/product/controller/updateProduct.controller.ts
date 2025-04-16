@@ -8,9 +8,9 @@ export const updateProductController = async (req: Request, res: Response) => {
 
   const parsed = updateProductSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ msg: "Dados inválidos", error: parsed.error });
+    res.status(400).json({ msg: "Dados inválidos", error: parsed.error });
+
+    return;
   }
 
   try {
@@ -21,11 +21,15 @@ export const updateProductController = async (req: Request, res: Response) => {
       data: parsed.data,
     });
 
-    return res.json(updated);
+    res.json(updated);
+
+    return;
   } catch (err: any) {
     const msg = err.message.includes("Slug")
       ? err.message
       : "Erro ao atualizar produto";
-    return res.status(400).json({ msg });
+
+    res.status(400).json({ msg });
+    return;
   }
 };

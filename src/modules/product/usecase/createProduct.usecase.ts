@@ -1,21 +1,7 @@
 import { prisma } from "@/prisma/client";
 import { CollaboratorRoles } from "@/shared/enums/collaboratorRole";
 import { Decimal } from "@prisma/client/runtime/library";
-
-interface VariationInput {
-  name: string;
-  price: number;
-}
-interface CreateProductInput {
-  name: string;
-  slug: string;
-  description?: string;
-  images?: string[];
-  storeSlug: string;
-  acceptOrderNote: boolean;
-  variations: VariationInput[];
-  requesterId: string;
-}
+import { CreateProductInput } from "../schema/createProduct.schema";
 
 export async function createProduct({
   name,

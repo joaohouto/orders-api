@@ -1,35 +1,21 @@
 import { Request, Response } from "express";
-import { z } from "zod";
 import { createProduct } from "../usecase/createProduct.usecase";
-
-const schema = z.object({
-  name: z.string().min(1),
-  slug: z.string().min(1),
-  description: z.string().optional(),
-  images: z.array(z.string().url()).optional(),
-  acceptOrderNote: z.boolean(),
-  isActive: z.boolean(),
-  variations: z
-    .array(
-      z.object({
-        name: z.string().min(1),
-        price: z.number().positive(),
-      })
-    )
-    .min(1),
-});
+import { schema } from "../schema/createProduct.schema";
 
 export const createProductController = async (req: Request, res: Response) => {
   const user = req.user;
   const { storeSlug } = req.params;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+    return;
+  }
 
   const parsed = schema.safeParse(req.body);
   if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ msg: "Dados inválidos", error: parsed.error });
+    res.status(400).json({ msg: "Dados inválidos", error: parsed.error });
+
+    return;
   }
 
   try {

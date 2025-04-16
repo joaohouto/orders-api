@@ -23,7 +23,6 @@ export async function sendOrderEmail({
     note: string | undefined;
   }[];
   total: any;
-  address: string;
 }) {
   const html = generateOrderEmailTemplate({
     customerName: name,

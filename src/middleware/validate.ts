@@ -10,12 +10,16 @@ export const validate =
       next();
     } catch (err) {
       if (err instanceof ZodError) {
-        return res.status(400).json({
+        res.status(400).json({
           msg: "Erro de validação",
           errors: err.format(),
         });
+
+        return;
       }
 
-      return res.status(500).json({ msg: "Erro interno ao validar dados" });
+      res.status(500).json({ msg: "Erro interno ao validar dados" });
+
+      return;
     }
   };

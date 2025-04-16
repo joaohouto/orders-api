@@ -15,13 +15,15 @@ export const updateCollaboratorRoleController = async (
   const user = req.user;
   const { storeSlug, userId } = req.params;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+    return;
+  }
 
   const parsed = bodySchema.safeParse(req.body);
   if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ msg: "Dados inválidos", error: parsed.error });
+    res.status(400).json({ msg: "Dados inválidos", error: parsed.error });
+    return;
   }
 
   try {
@@ -33,7 +35,11 @@ export const updateCollaboratorRoleController = async (
     });
 
     res.json(result);
+
+    return;
   } catch (err: any) {
     res.status(403).json({ msg: err.message });
+
+    return;
   }
 };

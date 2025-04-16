@@ -15,12 +15,18 @@ router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
   (req, res) => {
-    const user = req.user;
+    const user = req.user as {
+      id: string;
+      email: string;
+      name?: string;
+      avatar?: string;
+    };
+
     const token = generateToken(user);
 
     res.redirect(`${process.env.WEB_CLIENT_URL}/auth?token=${token}`);
 
-    //res.json({ user, token });
+    return;
   }
 );
 

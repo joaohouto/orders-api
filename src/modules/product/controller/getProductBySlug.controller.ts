@@ -9,10 +9,12 @@ export const getProductBySlugController = async (
 
   try {
     const product = await getProductBySlug(storeSlug, productSlug);
-    return res.json(product);
+    res.json(product);
+
+    return;
   } catch (err: any) {
-    return res
-      .status(404)
-      .json({ msg: err.message || "Erro ao buscar produto" });
+    res.status(404).json({ msg: err.message || "Erro ao buscar produto" });
+
+    return;
   }
 };

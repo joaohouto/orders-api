@@ -6,13 +6,17 @@ export const updateStoreController = async (req: Request, res: Response) => {
   const { storeId } = req.params;
   const user = req.user;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+
+    return;
+  }
 
   const parsed = updateStoreSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ msg: "Dados inválidos", error: parsed.error });
+    res.status(400).json({ msg: "Dados inválidos", error: parsed.error });
+
+    return;
   }
 
   try {
@@ -22,11 +26,16 @@ export const updateStoreController = async (req: Request, res: Response) => {
       data: parsed.data,
     });
 
-    return res.json(updated);
+    res.json(updated);
+
+    return;
   } catch (err: any) {
     const msg = err.message.includes("Slug")
       ? err.message
       : "Erro ao atualizar loja";
-    return res.status(400).json({ msg });
+
+    res.status(400).json({ msg });
+
+    return;
   }
 };

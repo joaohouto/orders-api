@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { Prisma } from "@prisma/client";
 
 interface ListProductsParams {
   storeSlug: string;
@@ -26,7 +27,9 @@ export async function getProducts({
   const where = {
     storeId: store.id,
     deletedAt: null,
-    name: search ? { contains: search, mode: "insensitive" } : undefined,
+    name: search
+      ? { contains: search, mode: Prisma.QueryMode.insensitive }
+      : undefined,
   };
 
   const [products, total] = await Promise.all([

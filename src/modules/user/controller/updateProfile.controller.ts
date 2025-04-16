@@ -3,7 +3,11 @@ import { updateProfile } from "../usecase/updateProfile.usecase";
 
 export const updateProfileController = async (req: Request, res: Response) => {
   const user = req.user;
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+
+    return;
+  }
 
   const { name, phone } = req.body;
 

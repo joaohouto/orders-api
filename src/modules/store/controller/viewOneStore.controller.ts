@@ -10,9 +10,11 @@ export const viewOneStoreController = async (req: Request, res: Response) => {
     });
 
     if (!store) {
-      return res.status(404).json({
+      res.status(404).json({
         msg: "Loja não encontrada",
       });
+
+      return;
     }
 
     res.json(store);

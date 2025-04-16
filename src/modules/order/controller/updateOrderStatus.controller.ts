@@ -17,11 +17,15 @@ export async function updateOrderStatusController(req: Request, res: Response) {
   const userId = req.user?.id;
   const orderId = req.params.orderId;
 
-  if (!userId) return res.status(401).json({ error: "Não autenticado" });
+  if (!userId) {
+    res.status(401).json({ error: "Não autenticado" });
+    return;
+  }
 
   const parse = bodySchema.safeParse(req.body);
   if (!parse.success) {
-    return res.status(400).json({ error: "Status inválido" });
+    res.status(400).json({ error: "Status inválido" });
+    return;
   }
 
   try {
@@ -31,8 +35,10 @@ export async function updateOrderStatusController(req: Request, res: Response) {
       parse.data.status
     );
 
-    return res.json(order);
+    res.json(order);
+    return;
   } catch (err: any) {
-    return res.status(403).json({ error: err.message });
+    res.status(403).json({ error: err.message });
+    return;
   }
 }

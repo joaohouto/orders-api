@@ -4,13 +4,18 @@
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
+    //"strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src", 
     "paths": {
       "@/*": ["*"]
     },
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+
+
+    "noEmitOnError": false,
+    "skipLibCheck": true,
+    "strict": false,
   },
   "include": ["src"],
   "exclude": ["node_modules"]

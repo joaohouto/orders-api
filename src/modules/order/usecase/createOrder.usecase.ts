@@ -1,15 +1,7 @@
 import { sendOrderEmail } from "@/lib/resend";
 import { prisma } from "@/prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
-
-type CreateOrderInput = {
-  items: {
-    productId: string;
-    variationId: string;
-    quantity: number;
-    note?: string;
-  }[];
-};
+import { CreateOrderInput } from "../schema/createOrder.schema";
 
 export async function createOrder(
   data: CreateOrderInput,

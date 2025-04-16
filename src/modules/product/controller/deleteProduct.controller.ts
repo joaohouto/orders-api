@@ -5,12 +5,21 @@ export async function deleteProductController(req: Request, res: Response) {
   const productId = req.params.productId;
   const user = req.user;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+
+    return;
+  }
 
   try {
     const result = await deleteProduct(productId, user.id);
-    return res.json(result);
+
+    res.json(result);
+
+    return;
   } catch (err: any) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
+
+    return;
   }
 }

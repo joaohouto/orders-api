@@ -8,7 +8,10 @@ export const removeCollaboratorController = async (
   const user = req.user;
   const { storeSlug, userId } = req.params;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+    return;
+  }
 
   try {
     const result = await removeCollaborator({
@@ -18,7 +21,11 @@ export const removeCollaboratorController = async (
     });
 
     res.json(result);
+
+    return;
   } catch (err: any) {
     res.status(403).json({ msg: err.message });
+
+    return;
   }
 };

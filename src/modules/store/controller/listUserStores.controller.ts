@@ -4,7 +4,11 @@ import { listUserStores } from "../usecase/listUserStores.usecase";
 export const listUserStoresController = async (req: Request, res: Response) => {
   const user = req.user;
 
-  if (!user) return res.status(401).json({ msg: "Não autenticado" });
+  if (!user) {
+    res.status(401).json({ msg: "Não autenticado" });
+
+    return;
+  }
 
   try {
     const list = await listUserStores({

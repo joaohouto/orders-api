@@ -6,7 +6,8 @@ export const uploadFileController = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
   if (!req.file) {
-    return res.status(400).json({ error: "Arquivo não enviado" });
+    res.status(400).json({ error: "Arquivo não enviado" });
+    return;
   }
 
   const file = await uploadFileUsecase({
@@ -16,5 +17,6 @@ export const uploadFileController = async (req: Request, res: Response) => {
     productId,
   });
 
-  return res.status(201).json(file);
+  res.status(201).json(file);
+  return;
 };

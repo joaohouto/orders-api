@@ -8,15 +8,25 @@ export const authMiddleware = (
 ) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) return res.status(401).json({ msg: "Token ausente" });
+  if (!authHeader) {
+    res.status(401).json({ msg: "Token ausente" });
+    return;
+  }
 
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.AUTH_SECRET!);
+    const decoded = jwt.verify(token, process.env.AUTH_SECRET!) as {
+      id: string;
+      email: string;
+      name?: string;
+      avatar?: string;
+    };
+
     req.user = decoded;
     next();
   } catch {
-    return res.status(403).json({ msg: "Token inválido" });
+    res.status(403).json({ msg: "Token inválido" });
+    return;
   }
 };

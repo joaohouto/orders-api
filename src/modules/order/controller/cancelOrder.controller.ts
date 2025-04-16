@@ -6,13 +6,17 @@ export async function cancelOrderController(req: Request, res: Response) {
   const orderId = req.params.orderId;
 
   if (!userId) {
-    return res.status(401).json({ error: "Não autenticado" });
+    res.status(401).json({ error: "Não autenticado" });
+    return;
   }
 
   try {
     const order = await cancelOrderUseCase(orderId, userId);
-    return res.json(order);
+    res.json(order);
+
+    return;
   } catch (err: any) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
+    return;
   }
 }
