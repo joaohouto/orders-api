@@ -9,10 +9,15 @@ export const updateProfileController = async (req: Request, res: Response) => {
     return;
   }
 
-  const { name, phone } = req.body;
+  const { name, phone, document } = req.body;
 
   try {
-    const updated = await updateProfile({ userId: user.id, name, phone });
+    const updated = await updateProfile({
+      userId: user.id,
+      name,
+      phone,
+      document,
+    });
     res.json(updated);
   } catch (err) {
     res.status(500).json({ msg: "Erro ao atualizar perfil", err });

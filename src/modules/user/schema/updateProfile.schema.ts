@@ -8,9 +8,12 @@ export const updateProfileSchema = z.object({
     .regex(/^\+?[1-9]\d{1,14}$/, "Telefone inválido")
     .optional(),
 
-  document: z.string().refine(isValidCPF, {
-    message: "CPF inválido",
-  }),
+  document: z
+    .string()
+    .refine(isValidCPF, {
+      message: "CPF inválido",
+    })
+    .optional(),
 });
 
 export function isValidCPF(cpf: string): boolean {
