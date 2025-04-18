@@ -46,6 +46,7 @@ export async function updateProduct({
       images: data.images,
       isActive: data.isActive,
       description: data.description,
+      acceptOrderNote: data.acceptOrderNote,
       variations: {
         deleteMany: {},
         create: data.variations.map((v) => ({
