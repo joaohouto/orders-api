@@ -27,6 +27,7 @@ export async function getProducts({
   const where = {
     storeId: store.id,
     deletedAt: null,
+    isActive: true,
     name: search
       ? { contains: search, mode: Prisma.QueryMode.insensitive }
       : undefined,

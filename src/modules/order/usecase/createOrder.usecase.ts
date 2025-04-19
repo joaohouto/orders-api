@@ -16,6 +16,12 @@ export async function createOrder(
 
   if (!store) throw new Error("Loja não encontrada");
 
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) throw new Error("Usuário não encontrado");
+
   let totalPrice = new Decimal(0);
   const orderItems = [];
 
@@ -57,6 +63,8 @@ export async function createOrder(
       userId,
       storeId,
       totalPrice,
+      buyerName: user.name,
+      buyerPhone: user.phone,
       items: {
         createMany: {
           data: orderItems,

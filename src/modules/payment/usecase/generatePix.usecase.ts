@@ -1,9 +1,16 @@
 import { prisma } from "@/prisma/client";
 import { QrCodePix } from "qrcode-pix";
 
-export async function payOrder(orderId: string, userId: string) {
+export async function generatePix(orderId: string, userId: string) {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
+    include: {
+      store: {
+        include: {
+          owner: true,
+        },
+      },
+    },
   });
 
   if (!order) {
@@ -11,21 +18,25 @@ export async function payOrder(orderId: string, userId: string) {
   }
 
   if (order.userId !== userId) {
-    throw new Error("Você não tem permissão para cancelar este pedido");
+    throw new Error("Você não tem permissão para pagar este pedido");
   }
 
   if (order.status !== "PENDING") {
-    throw new Error("Este não pode ser pago");
+    throw new Error("O pedido não pode ser pago");
+  }
+
+  if (!order.store.pix) {
+    throw new Error("Não há chave PIX de destino cadastrada para a loja");
   }
 
   const qrCodePix = QrCodePix({
     version: "01",
-    key: "pix@joaocouto.com",
-    name: "João Couto",
-    city: "AQUIDAUANA",
+    key: order.store.pix,
+    name: order.store.owner.name,
+    city: order.store.city,
     transactionId: order.id,
-    message: "Teste",
-    cep: "79200000",
+    message: "",
+    cep: order.store.postalCode,
     value: order.totalPrice.toNumber(),
   });
 

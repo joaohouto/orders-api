@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { payOrder } from "../usecase/payOrder.usecase";
+import { generatePix } from "../usecase/generatePix.usecase";
 
-export async function payOrderController(req: Request, res: Response) {
+export async function generatePixController(req: Request, res: Response) {
   const user = req.user;
   const { orderId } = req.params;
 
@@ -12,7 +12,7 @@ export async function payOrderController(req: Request, res: Response) {
   }
 
   try {
-    const payment = await payOrder(orderId, user.id);
+    const payment = await generatePix(orderId, user.id);
 
     res.json(payment);
     return;

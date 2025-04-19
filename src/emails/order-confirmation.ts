@@ -38,7 +38,7 @@ export function generateOrderEmailTemplate({
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333;">
-      <h2 style="color: #4f46e5;">Pedido confirmado!</h2>
+      <h2>Pedido confirmado!</h2>
       <p>Olá ${customerName}, seu pedido <strong>#${orderId}</strong> foi confirmado com sucesso!</p>
 
       <h3>📦 Itens do pedido</h3>

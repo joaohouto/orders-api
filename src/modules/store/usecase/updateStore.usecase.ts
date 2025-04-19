@@ -31,6 +31,9 @@ export async function updateStore({ storeId, requesterId, data }: Params) {
       instagram: data.instagram,
       icon: data.icon,
       banner: data.banner,
+      pix: data.pix,
+      city: data.city,
+      postalCode: data.postalCode,
     },
   });
 

@@ -30,6 +30,14 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
     throw new Error("Pedido não encontrado");
   }
 
+  if (order.userId !== requesterId) {
+    throw new Error("Você não tem permissão para pagar este pedido");
+  }
+
+  if (order.status !== "PENDING") {
+    throw new Error("O pedido não pode ser pago");
+  }
+
   const orderItems = order.items.map((item: any) => {
     return {
       id: item.id,
@@ -43,14 +51,15 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
     body: {
       items: orderItems,
       back_urls: {
-        success: `${process.env.WEB_CLIENT_URL}/orders?status=success`,
-        failure: `${process.env.WEB_CLIENT_URL}/orders?status=failed`,
-        pending: `${process.env.WEB_CLIENT_URL}/orders?status=pending`,
+        success: `${process.env.WEB_CLIENT_URL}/orders/${orderId}`,
+        failure: `${process.env.WEB_CLIENT_URL}/orders/${orderId}`,
+        pending: `${process.env.WEB_CLIENT_URL}/orders/${orderId}`,
       },
       notification_url:
-        "https://c7f9-2804-28f4-8b00-4c7-dd76-713b-f87a-5773.ngrok-free.app/webhook/mercadopago",
+        "https://1b73-2804-28f4-8b00-4c7-7687-41a0-5dde-5952.ngrok-free.app/webhook/mercadopago",
       payer: {
         email: order.user.email,
+        name: order.user.name,
       },
       metadata: {
         payer_email: order.user.email,

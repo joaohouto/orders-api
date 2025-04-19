@@ -31,6 +31,10 @@ model Store {
   icon      String?
   banner    String?
 
+  pix        String?
+  city       String?
+  postalCode String?
+
   ownerId String
   owner   User   @relation("OwnerStores", fields: [ownerId], references: [id])
 
@@ -79,6 +83,20 @@ model Product {
   orderItems OrderItem[]
 }
 
+model File {
+  id           String   @id @default(cuid())
+  url          String
+  key          String
+  storeId      String?
+  productId    String?
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  store      Store?   @relation(fields: [storeId], references: [id])
+  product    Product? @relation(fields: [productId], references: [id])
+  uploadedBy User?    @relation(fields: [uploadedById], references: [id])
+}
+
 model Variation {
   id        String    @id @default(cuid())
   name      String // Ex: P, M, G
@@ -97,12 +115,16 @@ model Order {
   user   User   @relation(fields: [userId], references: [id])
   userId String
 
+  buyerName  String
+  buyerPhone String
+
   status        OrderStatus          @default(PENDING)
   items         OrderItem[]
   totalPrice    Decimal              @default(0)
   createdAt     DateTime             @default(now())
   updatedAt     DateTime             @updatedAt
   statusHistory OrderStatusHistory[]
+  payments      Payment[]
 }
 
 model OrderItem {
@@ -137,21 +159,27 @@ model OrderStatusHistory {
   order       Order       @relation(fields: [orderId], references: [id])
   orderId     String
   status      OrderStatus
-  changedBy   User        @relation(fields: [changedById], references: [id])
-  changedById String
+  changedBy   User?       @relation(fields: [changedById], references: [id])
+  changedById String?
   createdAt   DateTime    @default(now())
 }
 
-model File {
-  id           String   @id @default(cuid())
-  url          String
-  key          String
-  storeId      String?
-  productId    String?
-  uploadedById String?
-  createdAt    DateTime @default(now())
+model Payment {
+  id                String   @id @default(cuid())
+  provider          String
+  providerPaymentId String
+  status            String
+  orderId           String
+  payerEmail        String
+  payerId           String
+  payerName         String
+  payerDocument     String
+  amount            Float
+  method            String
+  installments      Int
+  approvedAt        DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  store      Store?   @relation(fields: [storeId], references: [id])
-  product    Product? @relation(fields: [productId], references: [id])
-  uploadedBy User?    @relation(fields: [uploadedById], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 }

@@ -6,8 +6,6 @@ interface IConfirmPayment {
 }
 
 export async function confirmPayment({ orderId, payerId }: IConfirmPayment) {
-  console.log(orderId, payerId);
-
   const order = await prisma.order.update({
     where: {
       id: orderId,
@@ -21,7 +19,6 @@ export async function confirmPayment({ orderId, payerId }: IConfirmPayment) {
     data: {
       orderId,
       status: "CONFIRMED",
-      changedById: payerId,
     },
   });
 
