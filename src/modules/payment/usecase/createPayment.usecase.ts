@@ -55,8 +55,7 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
         failure: `${process.env.WEB_CLIENT_URL}/orders/${orderId}`,
         pending: `${process.env.WEB_CLIENT_URL}/orders/${orderId}`,
       },
-      notification_url:
-        "https://1b73-2804-28f4-8b00-4c7-7687-41a0-5dde-5952.ngrok-free.app/webhook/mercadopago",
+      notification_url: "https://orders-api.fly.dev/webhook/mercadopago",
       payer: {
         email: order.user.email,
         name: order.user.name,
