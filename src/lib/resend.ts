@@ -32,9 +32,9 @@ export async function sendOrderEmail({
   });
 
   await resend.emails.send({
-    from: "Vendeuu <vendeuu@joaocouto.com>",
+    from: "vendeuu <vendeuu@joaocouto.com>",
     to,
-    subject: "Confirmação do seu pedido!",
+    subject: "🐦 Confirmação do seu pedido!",
     html,
   });
 }
