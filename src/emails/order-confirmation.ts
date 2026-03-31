@@ -13,7 +13,6 @@ interface OrderEmailProps {
   orderCode: number;
   items: {
     productId: string;
-    variationId: string;
     productName: string;
     variationName: string;
     unitPrice: any;
