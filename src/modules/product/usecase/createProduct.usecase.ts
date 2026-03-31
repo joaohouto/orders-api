@@ -7,6 +7,7 @@ export async function createProduct({
   name,
   slug,
   description,
+  price,
   images,
   storeSlug,
   acceptOrderNote,
@@ -35,11 +36,15 @@ export async function createProduct({
     throw new Error("Sem permissão para criar produto");
   }
 
+  const slugInUse = await prisma.product.findFirst({ where: { slug, deletedAt: null } });
+  if (slugInUse) throw new Error("Slug já em uso");
+
   const product = await prisma.product.create({
     data: {
       name,
       slug,
       description,
+      price: new Decimal(price),
       images,
       storeId: store.id,
       isActive,
@@ -47,7 +52,8 @@ export async function createProduct({
       variations: {
         create: variations.map((v) => ({
           name: v.name,
-          price: new Decimal(v.price),
+          type: v.type,
+          priceAdjustment: new Decimal(v.priceAdjustment),
         })),
       },
     },

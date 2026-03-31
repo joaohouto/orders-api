@@ -18,7 +18,7 @@ export async function updateStore({ storeId, requesterId, data }: Params) {
   if (!hasPermission) throw new Error("Sem permissão");
 
   const existing = await prisma.store.findFirst({
-    where: { slug: data.slug, NOT: { id: storeId } },
+    where: { slug: data.slug.toLowerCase(), NOT: { id: storeId } },
   });
 
   if (existing) throw new Error("Slug já em uso");

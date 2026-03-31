@@ -7,28 +7,33 @@ export async function sendOrderEmail({
   to,
   name,
   orderId,
+  orderCode,
   items,
   total,
 }: {
   to: string;
   name: string;
   orderId: string;
+  orderCode: number;
   items: {
     productId: string;
-    variationId: string;
     productName: string;
-    variationName: string;
     unitPrice: any;
     quantity: number;
     note: string | undefined;
+    selectedVariations: { variationId: string; variationName: string; variationType: string }[];
   }[];
   total: any;
 }) {
   const html = generateOrderEmailTemplate({
     customerName: name,
     orderId,
+    orderCode,
     total,
-    items,
+    items: items.map((item) => ({
+      ...item,
+      variationName: item.selectedVariations.map((v) => v.variationName).join(" / "),
+    })),
   });
 
   await resend.emails.send({

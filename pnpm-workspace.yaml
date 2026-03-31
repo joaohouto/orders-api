@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - aws-sdk
+  - esbuild
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma

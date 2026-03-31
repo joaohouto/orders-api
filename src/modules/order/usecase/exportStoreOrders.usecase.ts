@@ -3,6 +3,15 @@ import { Parser } from "json2csv";
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
 
+const STATUS_LABELS: Record<string, string> = {
+  PENDING: "Pendente",
+  CONFIRMED: "Confirmado",
+  IN_PRODUCTION: "Em produção",
+  READY: "Pronto",
+  DELIVERED: "Entregue",
+  CANCELED: "Cancelado",
+};
+
 export async function exportStoreOrdersUseCase(
   storeSlug: string,
   userId: string
@@ -24,6 +33,9 @@ export async function exportStoreOrdersUseCase(
   if (!hasPermission) throw new Error("Sem permissão");
 
   const orders = await prisma.order.findMany({
+    where: {
+      storeId: store.id,
+    },
     include: {
       user: {
         select: {
@@ -35,6 +47,7 @@ export async function exportStoreOrdersUseCase(
       items: {
         include: {
           product: true,
+          selectedVariations: true,
         },
       },
     },
@@ -42,31 +55,33 @@ export async function exportStoreOrdersUseCase(
 
   const flattenedItems = orders.flatMap((order) =>
     order.items.map((item) => ({
-      orderId: order.id,
-      status: order.status,
-      userName: order.user.name,
-      userPhone: order.user.phone,
-      userDocument: order.user.document,
-      productName: item.product.name,
-      productVariation: item.variationName,
-      productItemNote: item.note,
-      unitPrice: item.unitPrice,
-      quantity: item.quantity,
+      "Código": order.code,
+      "Status": STATUS_LABELS[order.status] ?? order.status,
+      "Cliente": order.user.name,
+      "Telefone": order.user.phone,
+      "CPF/CNPJ": order.user.document,
+      "Produto": item.product.name,
+      "Variações": item.selectedVariations.map((v) => v.variationName).join(" / "),
+      "Observação": item.note ?? "",
+      "Preço unitário": Number(item.unitPrice).toFixed(2),
+      "Quantidade": item.quantity,
+      "Total do item": (Number(item.unitPrice) * item.quantity).toFixed(2),
     }))
   );
 
   const parser = new Parser({
     fields: [
-      "orderId",
-      "status",
-      "userName",
-      "userPhone",
-      "userDocument",
-      "productName",
-      "productVariation",
-      "productItemNote",
-      "unitPrice",
-      "quantity",
+      "Código",
+      "Status",
+      "Cliente",
+      "Telefone",
+      "CPF/CNPJ",
+      "Produto",
+      "Variações",
+      "Observação",
+      "Preço unitário",
+      "Quantidade",
+      "Total do item",
     ],
   });
 

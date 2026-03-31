@@ -6,21 +6,15 @@ interface IConfirmPayment {
 }
 
 export async function confirmPayment({ orderId, payerId }: IConfirmPayment) {
-  const order = await prisma.order.update({
-    where: {
-      id: orderId,
-    },
-    data: {
-      status: "CONFIRMED",
-    },
-  });
-
-  await prisma.orderStatusHistory.create({
-    data: {
-      orderId,
-      status: "CONFIRMED",
-    },
-  });
+  const [order] = await prisma.$transaction([
+    prisma.order.update({
+      where: { id: orderId },
+      data: { status: "CONFIRMED" },
+    }),
+    prisma.orderStatusHistory.create({
+      data: { orderId, status: "CONFIRMED" },
+    }),
+  ]);
 
   return order;
 }

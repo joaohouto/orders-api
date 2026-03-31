@@ -4,7 +4,7 @@ export const createOrderSchema = z.object({
   items: z.array(
     z.object({
       productId: z.string(),
-      variationId: z.string(),
+      variationIds: z.array(z.string()).min(1),
       quantity: z.number().min(1),
       note: z.string().optional(),
     })

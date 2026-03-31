@@ -32,17 +32,24 @@ export async function updateProduct({
 
   if (!hasPermission) throw new Error("Sem permissão");
 
-  const existing = await prisma.product.findFirst({
-    where: { storeId: store.id, slug: data.slug, NOT: { slug: productSlug } },
+  const product = await prisma.product.findFirst({
+    where: { storeId: store.id, slug: productSlug, deletedAt: null },
   });
 
-  if (existing) throw new Error("Slug já em uso");
+  if (!product) throw new Error("Produto não encontrado");
+
+  const slugTaken = await prisma.product.findFirst({
+    where: { storeId: store.id, slug: data.slug, deletedAt: null, NOT: { id: product.id } },
+  });
+
+  if (slugTaken) throw new Error("Slug já em uso");
 
   const updated = await prisma.product.update({
-    where: { slug: productSlug },
+    where: { id: product.id },
     data: {
       name: data.name,
       slug: data.slug,
+      price: new Decimal(data.price),
       images: data.images,
       isActive: data.isActive,
       description: data.description,
@@ -51,7 +58,8 @@ export async function updateProduct({
         deleteMany: {},
         create: data.variations.map((v) => ({
           name: v.name,
-          price: new Decimal(v.price),
+          type: v.type,
+          priceAdjustment: new Decimal(v.priceAdjustment),
         })),
       },
     },

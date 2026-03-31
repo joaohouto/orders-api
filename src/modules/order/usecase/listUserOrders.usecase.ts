@@ -8,6 +8,13 @@ export async function listUserOrders(userId: string) {
     include: {
       items: {
         include: {
+          selectedVariations: {
+            select: {
+              id: true,
+              variationName: true,
+              variationType: true,
+            },
+          },
           product: {
             select: {
               images: true,

@@ -20,6 +20,7 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
       items: {
         include: {
           product: true,
+          selectedVariations: true,
         },
       },
       user: true,
@@ -43,7 +44,7 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
       id: item.id,
       unit_price: item.unitPrice.toNumber(),
       quantity: item.quantity,
-      title: `${item.productName} (${item.variationName}) ${item.note}`,
+      title: `${item.productName} (${item.selectedVariations.map((v: any) => v.variationName).join(" / ")})${item.note ? ` - ${item.note}` : ""}`,
     };
   });
 

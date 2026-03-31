@@ -26,35 +26,43 @@ export async function createOrder(
   const orderItems = [];
 
   for (const item of items) {
-    const variation = await prisma.variation.findFirst({
+    const product = await prisma.product.findFirst({
+      where: { id: item.productId, storeId, deletedAt: null },
+    });
+
+    if (!product) throw new Error("Produto inválido");
+
+    const variations = await prisma.variation.findMany({
       where: {
-        id: item.variationId,
+        id: { in: item.variationIds },
         productId: item.productId,
         deletedAt: null,
-        product: {
-          deletedAt: null,
-          storeId,
-        },
-      },
-      include: {
-        product: true,
       },
     });
 
-    if (!variation) throw new Error("Produto ou variação inválida");
+    if (variations.length !== item.variationIds.length) {
+      throw new Error("Uma ou mais variações inválidas");
+    }
 
-    const unitPrice = variation.price;
-    const itemTotal = unitPrice.mul(item.quantity);
-    totalPrice = totalPrice.add(itemTotal);
+    const adjustment = variations.reduce(
+      (sum, v) => sum.add(v.priceAdjustment),
+      new Decimal(0)
+    );
+    const unitPrice = product.price.add(adjustment);
+
+    totalPrice = totalPrice.add(unitPrice.mul(item.quantity));
 
     orderItems.push({
-      productId: variation.productId,
-      variationId: variation.id,
-      productName: variation.product.name,
-      variationName: variation.name,
+      productId: product.id,
+      productName: product.name,
       unitPrice,
       quantity: item.quantity,
       note: item.note,
+      selectedVariations: variations.map((v) => ({
+        variationId: v.id,
+        variationName: v.name,
+        variationType: v.type,
+      })),
     });
   }
 
@@ -66,18 +74,20 @@ export async function createOrder(
       buyerName: user.name,
       buyerPhone: user.phone,
       items: {
-        createMany: {
-          data: orderItems,
-        },
+        create: orderItems.map(({ selectedVariations, ...item }) => ({
+          ...item,
+          selectedVariations: {
+            create: selectedVariations,
+          },
+        })),
       },
     },
     include: {
-      items: true,
+      items: { include: { selectedVariations: true } },
       user: true,
     },
   });
 
-  // grava histórico de status
   await prisma.orderStatusHistory.create({
     data: {
       orderId: order.id,
@@ -86,9 +96,9 @@ export async function createOrder(
     },
   });
 
-  // enviar email com os dados do pedido
   await sendOrderEmail({
     orderId: order.id,
+    orderCode: order.code,
     items: orderItems,
     name: order.user.name,
     to: order.user.email,

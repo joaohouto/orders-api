@@ -16,7 +16,9 @@ export const authMiddleware = (
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.AUTH_SECRET!) as {
+    const decoded = jwt.verify(token, process.env.AUTH_SECRET!, {
+      algorithms: ["HS256"],
+    }) as {
       id: string;
       email: string;
       name?: string;

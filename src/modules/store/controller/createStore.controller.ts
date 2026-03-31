@@ -17,8 +17,8 @@ export const createStoreController = async (req: Request, res: Response) => {
     res.status(201).json(store);
 
     return;
-  } catch (err) {
-    res.status(500).json({ msg: "Erro ao criar loja", err });
+  } catch (err: any) {
+    res.status(500).json({ msg: err.message || "Erro ao criar loja" });
 
     return;
   }

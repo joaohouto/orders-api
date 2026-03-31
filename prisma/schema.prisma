@@ -67,8 +67,9 @@ enum StoreRole {
 model Product {
   id              String      @id @default(cuid())
   name            String
-  slug            String      @unique
+  slug            String
   description     String?
+  price           Decimal
   images          String[]
   storeId         String
   store           Store       @relation(fields: [storeId], references: [id])
@@ -97,17 +98,26 @@ model File {
   uploadedBy User?    @relation(fields: [uploadedById], references: [id])
 }
 
+enum VariationType {
+  GENERIC
+  COLOR
+  SIZE
+  FABRIC
+}
+
 model Variation {
-  id        String    @id @default(cuid())
-  name      String // Ex: P, M, G
-  price     Decimal
-  productId String
-  product   Product   @relation(fields: [productId], references: [id])
+  id              String        @id @default(cuid())
+  name            String
+  type            VariationType @default(GENERIC)
+  priceAdjustment Decimal       @default(0)
+  productId       String
+  product   Product       @relation(fields: [productId], references: [id])
   deletedAt DateTime?
 }
 
 model Order {
-  id String @id @default(cuid())
+  id   String @id @default(cuid())
+  code Int    @default(autoincrement()) @unique
 
   store   Store  @relation(fields: [storeId], references: [id])
   storeId String
@@ -136,13 +146,20 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   productId String
 
-  variationId String
+  productName        String
+  unitPrice          Decimal
+  quantity           Int
+  note               String?
+  selectedVariations OrderItemVariation[]
+}
 
-  productName   String
+model OrderItemVariation {
+  id            String        @id @default(cuid())
+  orderItem     OrderItem     @relation(fields: [orderItemId], references: [id])
+  orderItemId   String
+  variationId   String
   variationName String
-  unitPrice     Decimal
-  quantity      Int
-  note          String?
+  variationType VariationType
 }
 
 enum OrderStatus {

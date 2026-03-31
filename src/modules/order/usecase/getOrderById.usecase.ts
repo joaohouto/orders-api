@@ -2,7 +2,7 @@ import { prisma } from "@/prisma/client";
 
 export async function getOrderByIdUseCase(
   orderId: string,
-  requesterId: string
+  requesterId: string,
 ) {
   const order = await prisma.order.findFirst({
     where: { id: orderId },
@@ -17,6 +17,13 @@ export async function getOrderByIdUseCase(
       items: {
         include: {
           product: true,
+          selectedVariations: {
+            select: {
+              id: true,
+              variationName: true,
+              variationType: true,
+            },
+          },
         },
       },
       statusHistory: {
@@ -35,7 +42,7 @@ export async function getOrderByIdUseCase(
   const isCollaborator = order.store.collaborators.some(
     (collab) =>
       collab.userId === requesterId &&
-      (collab.role === "EDIT" || collab.role === "VIEW")
+      (collab.role === "EDIT" || collab.role === "VIEW"),
   );
 
   if (!isOrderOwner && !isStoreOwner && !isCollaborator) {

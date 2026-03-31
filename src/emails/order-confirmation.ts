@@ -1,6 +1,16 @@
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 interface OrderEmailProps {
   customerName: string;
   orderId: string;
+  orderCode: number;
   items: {
     productId: string;
     variationId: string;
@@ -16,6 +26,7 @@ interface OrderEmailProps {
 export function generateOrderEmailTemplate({
   customerName,
   orderId,
+  orderCode,
   items,
   total,
 }: OrderEmailProps) {
@@ -23,12 +34,12 @@ export function generateOrderEmailTemplate({
     .map(
       (item) => `
       <li style="margin-bottom: 8px;">
-        <div><strong>${item.productName}</strong> - ${item.variationName}</div>
+        <div><strong>${escapeHtml(item.productName)}</strong> - ${escapeHtml(item.variationName)}</div>
         <div>Quantidade: ${item.quantity}</div>
         <div>Preço unitário: R$ ${Number(item.unitPrice).toFixed(2)}</div>
         ${
           item.note
-            ? `<div style="font-style: italic;">Observação: ${item.note}</div>`
+            ? `<div style="font-style: italic;">Observação: ${escapeHtml(item.note)}</div>`
             : ""
         }
       </li>
@@ -39,7 +50,7 @@ export function generateOrderEmailTemplate({
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; color: #333;">
       <h2>Pedido confirmado!</h2>
-      <p>Olá ${customerName}, seu pedido <strong>#${orderId}</strong> foi confirmado com sucesso!</p>
+      <p>Olá ${escapeHtml(customerName)}, seu pedido <strong>#${orderCode}</strong> foi confirmado com sucesso!</p>
 
       <h3>📦 Itens do pedido</h3>
       <ul style="padding-left: 20px; list-style: disc;">

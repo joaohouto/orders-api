@@ -4,13 +4,15 @@ export const updateProductSchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
   description: z.string().min(1),
+  price: z.number().positive(),
   images: z.array(z.string().url()).min(1),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),
   variations: z.array(
     z.object({
       name: z.string().min(1),
-      price: z.number().nonnegative(),
+      type: z.enum(["GENERIC", "COLOR", "SIZE", "FABRIC"]).default("GENERIC"),
+      priceAdjustment: z.number().default(0),
     })
   ),
 });

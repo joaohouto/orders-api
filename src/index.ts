@@ -11,11 +11,38 @@ import productRoutes from "@/modules/product/product.routes";
 import orderRoutes from "@/modules/order/order.routes";
 import fileRoutes from "@/modules/file/file.routes";
 import paymentRoutes from "@/modules/payment/payment.routes";
+import { rateLimiter } from "@/middleware/rateLimit";
 
 dotenv.config();
 
+const ALLOWED_ORIGINS = [
+  "https://vendeuu.web.app",
+  /^http:\/\/localhost(:\d+)?$/,
+  ...(process.env.EXTRA_CORS_ORIGINS
+    ? process.env.EXTRA_CORS_ORIGINS.split(",")
+    : []),
+];
+
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Permite requisições sem origin (ex: mobile, curl, server-to-server)
+      if (
+        !origin ||
+        ALLOWED_ORIGINS.some((o) =>
+          typeof o === "string" ? o === origin : o.test(origin),
+        )
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS: origem não permitida"));
+      }
+    },
+    credentials: true,
+  }),
+);
+app.use(rateLimiter);
 app.use(express.json());
 app.use(passport.initialize());
 

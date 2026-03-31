@@ -19,7 +19,7 @@ export const updateProfileController = async (req: Request, res: Response) => {
       document,
     });
     res.json(updated);
-  } catch (err) {
-    res.status(500).json({ msg: "Erro ao atualizar perfil", err });
+  } catch (err: any) {
+    res.status(500).json({ msg: err.message || "Erro ao atualizar perfil" });
   }
 };

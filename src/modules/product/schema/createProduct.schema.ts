@@ -4,6 +4,7 @@ export const schema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
   description: z.string().optional(),
+  price: z.number().positive(),
   images: z.array(z.string().url()).optional(),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),
@@ -11,7 +12,8 @@ export const schema = z.object({
     .array(
       z.object({
         name: z.string().min(1),
-        price: z.number().positive(),
+        type: z.enum(["GENERIC", "COLOR", "SIZE", "FABRIC"]).default("GENERIC"),
+        priceAdjustment: z.number().default(0),
       })
     )
     .min(1),

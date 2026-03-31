@@ -22,10 +22,10 @@ export async function deleteProduct(productId: string, requesterId: string) {
 
   const now = new Date();
 
-  // Soft delete no produto
+  // Soft delete no produto — slug liberado com sufixo para permitir reuso
   await prisma.product.update({
     where: { id: productId },
-    data: { deletedAt: now },
+    data: { deletedAt: now, slug: `${product.slug}__deleted__${now.getTime()}` },
   });
 
   // Soft delete nas variações

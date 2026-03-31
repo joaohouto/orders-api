@@ -20,12 +20,24 @@ const s3 = new S3Client({
   },
 });
 
+const ALLOWED_MIMETYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
+
 export async function uploadFileUsecase({
   file,
   uploadedById,
   storeId,
   productId,
 }: Params) {
+  if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
+    throw new Error("Tipo de arquivo não permitido. Envie apenas imagens.");
+  }
+
   const fileExtension = mime.getExtension(file.mimetype);
   const fileName = `${randomUUID()}.${fileExtension}`;
 
