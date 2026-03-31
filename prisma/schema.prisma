@@ -117,7 +117,7 @@ model Variation {
 
 model Order {
   id   String @id @default(cuid())
-  code Int    @default(autoincrement()) @unique
+  code String @unique
 
   store   Store  @relation(fields: [storeId], references: [id])
   storeId String

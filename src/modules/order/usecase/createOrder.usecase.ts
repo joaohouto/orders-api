@@ -1,3 +1,4 @@
+import { generateUniqueOrderCode } from "@/lib/orderCode";
 import { sendOrderEmail } from "@/lib/resend";
 import { prisma } from "@/prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
@@ -66,8 +67,11 @@ export async function createOrder(
     });
   }
 
+  const code = await generateUniqueOrderCode();
+
   const order = await prisma.order.create({
     data: {
+      code,
       userId,
       storeId,
       totalPrice,

@@ -10,7 +10,7 @@ function escapeHtml(str: string): string {
 interface OrderEmailProps {
   customerName: string;
   orderId: string;
-  orderCode: number;
+  orderCode: string;
   items: {
     productId: string;
     productName: string;

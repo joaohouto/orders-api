@@ -34,7 +34,7 @@ export async function generatePix(orderId: string, userId: string) {
     key: order.store.pix,
     name: order.store.owner.name,
     city: order.store.city,
-    transactionId: order.id,
+    transactionId: order.code.replace("-", ""),
     message: "",
     cep: order.store.postalCode,
     value: order.totalPrice.toNumber(),

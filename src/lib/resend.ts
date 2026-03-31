@@ -14,7 +14,7 @@ export async function sendOrderEmail({
   to: string;
   name: string;
   orderId: string;
-  orderCode: number;
+  orderCode: string;
   items: {
     productId: string;
     productName: string;
