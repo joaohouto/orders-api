@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+const variationSchema = z.object({
+  name: z.string().min(1),
+  priceAdjustment: z.number().default(0),
+});
+
+const variationGroupSchema = z.object({
+  name: z.string().min(1),
+  variations: z.array(variationSchema).min(1),
+});
+
 export const updateProductSchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1),
@@ -8,13 +18,7 @@ export const updateProductSchema = z.object({
   images: z.array(z.string().url()).min(1).max(10),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),
-  variations: z.array(
-    z.object({
-      name: z.string().min(1),
-      type: z.enum(["GENERIC", "COLOR", "SIZE", "FABRIC"]).default("GENERIC"),
-      priceAdjustment: z.number().default(0),
-    })
-  ),
+  variationGroups: z.array(variationGroupSchema),
 });
 
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;

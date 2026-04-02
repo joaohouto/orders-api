@@ -12,6 +12,10 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELED: "Cancelado",
 };
 
+function formatDate(date: Date): string {
+  return date.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+}
+
 export async function exportStoreOrdersUseCase(
   storeSlug: string,
   userId: string
@@ -53,38 +57,60 @@ export async function exportStoreOrdersUseCase(
     },
   });
 
+  // Coleta todos os nomes de grupos de variação únicos presentes nos pedidos
+  const allVariationGroups = Array.from(
+    new Set(
+      orders.flatMap((order) =>
+        order.items.flatMap((item) =>
+          item.selectedVariations.map((v) => v.variationGroup)
+        )
+      )
+    )
+  ).sort();
+
   const flattenedItems = orders.flatMap((order) =>
-    order.items.map((item) => ({
-      "Código": order.code,
-      "Status": STATUS_LABELS[order.status] ?? order.status,
-      "Cliente": order.user.name,
-      "Telefone": order.user.phone,
-      "CPF/CNPJ": order.user.document,
-      "Produto": item.product.name,
-      "Variações": item.selectedVariations.map((v) => v.variationName).join(" / "),
-      "Observação": item.note ?? "",
-      "Preço unitário": Number(item.unitPrice).toFixed(2),
-      "Quantidade": item.quantity,
-      "Total do item": (Number(item.unitPrice) * item.quantity).toFixed(2),
-    }))
+    order.items.map((item) => {
+      const variationColumns: Record<string, string> = {};
+      for (const group of allVariationGroups) {
+        const match = item.selectedVariations.find(
+          (v) => v.variationGroup === group
+        );
+        variationColumns[group] = match?.variationName ?? "";
+      }
+
+      return {
+        "Código": order.code,
+        "Data do pedido": formatDate(order.createdAt),
+        "Status": STATUS_LABELS[order.status] ?? order.status,
+        "Cliente": order.user.name,
+        "Telefone": order.user.phone,
+        "CPF/CNPJ": order.user.document,
+        "Produto": item.product.name,
+        ...variationColumns,
+        "Observação": item.note ?? "",
+        "Preço unitário": Number(item.unitPrice).toFixed(2),
+        "Quantidade": item.quantity,
+        "Total do item": (Number(item.unitPrice) * item.quantity).toFixed(2),
+      };
+    })
   );
 
-  const parser = new Parser({
-    fields: [
-      "Código",
-      "Status",
-      "Cliente",
-      "Telefone",
-      "CPF/CNPJ",
-      "Produto",
-      "Variações",
-      "Observação",
-      "Preço unitário",
-      "Quantidade",
-      "Total do item",
-    ],
-  });
+  const fields = [
+    "Código",
+    "Data do pedido",
+    "Status",
+    "Cliente",
+    "Telefone",
+    "CPF/CNPJ",
+    "Produto",
+    ...allVariationGroups,
+    "Observação",
+    "Preço unitário",
+    "Quantidade",
+    "Total do item",
+  ];
 
+  const parser = new Parser({ fields });
   const csv = parser.parse(flattenedItems);
 
   return csv;

@@ -28,8 +28,19 @@ export async function deleteProduct(productId: string, requesterId: string) {
     data: { deletedAt: now, slug: `${product.slug}__deleted__${now.getTime()}` },
   });
 
-  // Soft delete nas variações
+  // Soft delete nos grupos e variações
+  const groups = await prisma.variationGroup.findMany({
+    where: { productId },
+    select: { id: true },
+  });
+  const groupIds = groups.map((g) => g.id);
+
   await prisma.variation.updateMany({
+    where: { groupId: { in: groupIds } },
+    data: { deletedAt: now },
+  });
+
+  await prisma.variationGroup.updateMany({
     where: { productId },
     data: { deletedAt: now },
   });

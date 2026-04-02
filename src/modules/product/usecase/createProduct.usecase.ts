@@ -12,7 +12,7 @@ export async function createProduct({
   storeSlug,
   acceptOrderNote,
   isActive,
-  variations,
+  variationGroups,
   requesterId,
 }: CreateProductInput) {
   const store = await prisma.store.findUnique({
@@ -49,16 +49,20 @@ export async function createProduct({
       storeId: store.id,
       isActive,
       acceptOrderNote,
-      variations: {
-        create: variations.map((v) => ({
-          name: v.name,
-          type: v.type,
-          priceAdjustment: new Decimal(v.priceAdjustment),
+      variationGroups: {
+        create: variationGroups.map((g) => ({
+          name: g.name,
+          variations: {
+            create: g.variations.map((v) => ({
+              name: v.name,
+              priceAdjustment: new Decimal(v.priceAdjustment),
+            })),
+          },
         })),
       },
     },
     include: {
-      variations: true,
+      variationGroups: { include: { variations: true } },
     },
   });
 

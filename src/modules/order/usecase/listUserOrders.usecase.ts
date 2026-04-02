@@ -12,7 +12,7 @@ export async function listUserOrders(userId: string) {
             select: {
               id: true,
               variationName: true,
-              variationType: true,
+              variationGroup: true,
             },
           },
           product: {

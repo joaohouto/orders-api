@@ -21,7 +21,7 @@ export async function getOrderByIdUseCase(
             select: {
               id: true,
               variationName: true,
-              variationType: true,
+              variationGroup: true,
             },
           },
         },

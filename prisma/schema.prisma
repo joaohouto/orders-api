@@ -65,20 +65,20 @@ enum StoreRole {
 }
 
 model Product {
-  id              String      @id @default(cuid())
+  id              String           @id @default(cuid())
   name            String
   slug            String
   description     String?
   price           Decimal
   images          String[]
   storeId         String
-  store           Store       @relation(fields: [storeId], references: [id])
-  variations      Variation[]
-  acceptOrderNote Boolean     @default(false)
-  isActive        Boolean     @default(true)
+  store           Store            @relation(fields: [storeId], references: [id])
+  variationGroups VariationGroup[]
+  acceptOrderNote Boolean          @default(false)
+  isActive        Boolean          @default(true)
   deletedAt       DateTime?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   files      File[]
   orderItems OrderItem[]
@@ -98,21 +98,22 @@ model File {
   uploadedBy User?    @relation(fields: [uploadedById], references: [id])
 }
 
-enum VariationType {
-  GENERIC
-  COLOR
-  SIZE
-  FABRIC
+model VariationGroup {
+  id        String      @id @default(cuid())
+  name      String
+  productId String
+  product   Product     @relation(fields: [productId], references: [id])
+  variations Variation[]
+  deletedAt DateTime?
 }
 
 model Variation {
-  id              String        @id @default(cuid())
+  id              String         @id @default(cuid())
   name            String
-  type            VariationType @default(GENERIC)
-  priceAdjustment Decimal       @default(0)
-  productId       String
-  product   Product       @relation(fields: [productId], references: [id])
-  deletedAt DateTime?
+  priceAdjustment Decimal        @default(0)
+  groupId         String
+  group           VariationGroup @relation(fields: [groupId], references: [id])
+  deletedAt       DateTime?
 }
 
 model Order {
@@ -154,12 +155,12 @@ model OrderItem {
 }
 
 model OrderItemVariation {
-  id            String        @id @default(cuid())
-  orderItem     OrderItem     @relation(fields: [orderItemId], references: [id])
-  orderItemId   String
-  variationId   String
-  variationName String
-  variationType VariationType
+  id             String    @id @default(cuid())
+  orderItem      OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItemId    String
+  variationId    String
+  variationName  String
+  variationGroup String
 }
 
 enum OrderStatus {

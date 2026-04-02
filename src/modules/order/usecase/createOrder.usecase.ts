@@ -36,9 +36,10 @@ export async function createOrder(
     const variations = await prisma.variation.findMany({
       where: {
         id: { in: item.variationIds },
-        productId: item.productId,
+        group: { productId: item.productId },
         deletedAt: null,
       },
+      include: { group: true },
     });
 
     if (variations.length !== item.variationIds.length) {
@@ -62,7 +63,7 @@ export async function createOrder(
       selectedVariations: variations.map((v) => ({
         variationId: v.id,
         variationName: v.name,
-        variationType: v.type,
+        variationGroup: v.group.name,
       })),
     });
   }

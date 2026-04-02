@@ -10,7 +10,10 @@ export async function getProductBySlug(storeSlug: string, productSlug: string) {
   const product = await prisma.product.findFirst({
     where: { storeId: store.id, slug: productSlug, deletedAt: null },
     include: {
-      variations: true,
+      variationGroups: {
+        where: { deletedAt: null },
+        include: { variations: { where: { deletedAt: null } } },
+      },
       store: {
         select: {
           name: true,

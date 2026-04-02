@@ -44,28 +44,42 @@ export async function updateProduct({
 
   if (slugTaken) throw new Error("Slug já em uso");
 
-  const updated = await prisma.product.update({
-    where: { id: product.id },
-    data: {
-      name: data.name,
-      slug: data.slug,
-      price: new Decimal(data.price),
-      images: data.images,
-      isActive: data.isActive,
-      description: data.description,
-      acceptOrderNote: data.acceptOrderNote,
-      variations: {
-        deleteMany: {},
-        create: data.variations.map((v) => ({
-          name: v.name,
-          type: v.type,
-          priceAdjustment: new Decimal(v.priceAdjustment),
-        })),
+  const updated = await prisma.$transaction(async (tx) => {
+    const existingGroups = await tx.variationGroup.findMany({
+      where: { productId: product.id },
+      select: { id: true },
+    });
+    const groupIds = existingGroups.map((g) => g.id);
+
+    await tx.variation.deleteMany({ where: { groupId: { in: groupIds } } });
+    await tx.variationGroup.deleteMany({ where: { productId: product.id } });
+
+    return tx.product.update({
+      where: { id: product.id },
+      data: {
+        name: data.name,
+        slug: data.slug,
+        price: new Decimal(data.price),
+        images: data.images,
+        isActive: data.isActive,
+        description: data.description,
+        acceptOrderNote: data.acceptOrderNote,
+        variationGroups: {
+          create: data.variationGroups.map((g) => ({
+            name: g.name,
+            variations: {
+              create: g.variations.map((v) => ({
+                name: v.name,
+                priceAdjustment: new Decimal(v.priceAdjustment),
+              })),
+            },
+          })),
+        },
       },
-    },
-    include: {
-      variations: true,
-    },
+      include: {
+        variationGroups: { include: { variations: true } },
+      },
+    });
   });
 
   return updated;

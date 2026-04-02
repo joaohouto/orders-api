@@ -21,7 +21,7 @@ export async function sendOrderEmail({
     unitPrice: any;
     quantity: number;
     note: string | undefined;
-    selectedVariations: { variationId: string; variationName: string; variationType: string }[];
+    selectedVariations: { variationId: string; variationName: string; variationGroup: string }[];
   }[];
   total: any;
 }) {
