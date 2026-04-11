@@ -8,10 +8,12 @@ import { updateOrderStatusController } from "./controller/updateOrderStatus.cont
 import { cancelOrderController } from "./controller/cancelOrder.controller";
 import { getOrderById } from "./controller/getOrderById.controller";
 import { exportStoreOrdersController } from "./controller/exportStoreOrders.controller";
+import { createGuestOrderController } from "./controller/createGuestOrder.controller";
 
 const router = Router();
 
 router.post("/stores/:storeId/orders", authMiddleware, createOrderController);
+router.post("/stores/:storeSlug/orders/guest", authMiddleware, createGuestOrderController);
 router.get("/me/orders", authMiddleware, getUserOrdersController);
 router.patch("/orders/:orderId/cancel", authMiddleware, cancelOrderController);
 

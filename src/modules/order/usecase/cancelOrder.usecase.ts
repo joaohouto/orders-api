@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { checkPermission } from "@/core/permission/checkPermission";
 
 export async function cancelOrderUseCase(orderId: string, userId: string) {
   const order = await prisma.order.findUnique({
@@ -9,7 +10,14 @@ export async function cancelOrderUseCase(orderId: string, userId: string) {
     throw new Error("Pedido não encontrado");
   }
 
-  if (order.userId !== userId) {
+  const isOrderOwner = order.userId === userId;
+  const isStoreAdmin = await checkPermission({
+    storeId: order.storeId,
+    userId,
+    allowedRoles: ["OWNER", "EDIT"],
+  });
+
+  if (!isOrderOwner && !isStoreAdmin) {
     throw new Error("Você não tem permissão para cancelar este pedido");
   }
 

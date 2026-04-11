@@ -37,7 +37,7 @@ export async function getOrderByIdUseCase(
 
   if (!order) throw new Error("Pedido não encontrado");
 
-  const isOrderOwner = order.user.id === requesterId;
+  const isOrderOwner = order.user?.id === requesterId;
   const isStoreOwner = order.store.owner.id === requesterId;
   const isCollaborator = order.store.collaborators.some(
     (collab) =>
