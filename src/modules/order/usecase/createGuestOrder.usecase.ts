@@ -36,6 +36,10 @@ export async function createGuestOrder(
 
     if (!product) throw new Error("Produto inválido");
 
+    if (product.soldOutAt && product.soldOutAt <= new Date()) {
+      throw new Error(`Produto "${product.name}" está esgotado`);
+    }
+
     const variations = await prisma.variation.findMany({
       where: {
         id: { in: item.variationIds },

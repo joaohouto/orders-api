@@ -62,6 +62,7 @@ export async function updateProduct({
         price: new Decimal(data.price),
         images: data.images,
         isActive: data.isActive,
+        soldOutAt: data.soldOutAt ?? null,
         description: data.description,
         acceptOrderNote: data.acceptOrderNote,
         variationGroups: {

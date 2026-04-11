@@ -18,6 +18,7 @@ export const updateProductSchema = z.object({
   images: z.array(z.string().url()).min(1).max(10),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),
+  soldOutAt: z.coerce.date().nullable().optional(),
   variationGroups: z.array(variationGroupSchema),
 });
 
