@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma/client";
+import { profanity } from "@2toad/profanity";
 
 // Sem caracteres ambíguos: sem 0, 1, I, O
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -11,11 +11,10 @@ function generate(): string {
   return `${code.slice(0, 4)}-${code.slice(4)}`;
 }
 
-export async function generateUniqueOrderCode(): Promise<string> {
-  for (let attempt = 0; attempt < 10; attempt++) {
+export function generateOrderCode(): string {
+  for (let attempt = 0; attempt < 20; attempt++) {
     const code = generate();
-    const existing = await prisma.order.findUnique({ where: { code } });
-    if (!existing) return code;
+    if (!profanity.exists(code.replace("-", " "))) return code;
   }
-  throw new Error("Não foi possível gerar um código único para o pedido");
+  throw new Error("Não foi possível gerar um código para o pedido");
 }

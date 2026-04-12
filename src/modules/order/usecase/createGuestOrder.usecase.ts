@@ -1,4 +1,5 @@
-import { generateUniqueOrderCode } from "@/lib/orderCode";
+import { Prisma } from "@prisma/client";
+import { generateOrderCode } from "@/lib/orderCode";
 import { sendOrderEmail } from "@/lib/resend";
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
@@ -8,7 +9,7 @@ import { CreateGuestOrderInput } from "../schema/createGuestOrder.schema";
 export async function createGuestOrder(
   data: CreateGuestOrderInput,
   storeSlug: string,
-  requesterId: string
+  requesterId: string,
 ) {
   const { items, buyerName, buyerPhone, buyerEmail } = data;
 
@@ -37,7 +38,7 @@ export async function createGuestOrder(
     if (!product) throw new Error("Produto inválido");
 
     if (product.soldOutAt && product.soldOutAt <= new Date()) {
-      throw new Error(`Produto "${product.name}" está esgotado`);
+      throw new Error("Produto esgotado");
     }
 
     const variations = await prisma.variation.findMany({
@@ -55,7 +56,7 @@ export async function createGuestOrder(
 
     const adjustment = variations.reduce(
       (sum, v) => sum.add(v.priceAdjustment),
-      new Decimal(0)
+      new Decimal(0),
     );
     const unitPrice = product.price.add(adjustment);
 
@@ -75,28 +76,40 @@ export async function createGuestOrder(
     });
   }
 
-  const code = await generateUniqueOrderCode();
-
-  const order = await prisma.order.create({
-    data: {
-      code,
-      storeId: store.id,
-      totalPrice,
-      buyerName,
-      buyerPhone,
-      items: {
-        create: orderItems.map(({ selectedVariations, ...item }) => ({
-          ...item,
-          selectedVariations: {
-            create: selectedVariations,
+  let order;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      order = await prisma.order.create({
+        data: {
+          code: generateOrderCode(),
+          storeId: store.id,
+          totalPrice,
+          buyerName,
+          buyerPhone,
+          items: {
+            create: orderItems.map(({ selectedVariations, ...item }) => ({
+              ...item,
+              selectedVariations: {
+                create: selectedVariations,
+              },
+            })),
           },
-        })),
-      },
-    },
-    include: {
-      items: { include: { selectedVariations: true } },
-    },
-  });
+        },
+        include: {
+          items: { include: { selectedVariations: true } },
+        },
+      });
+      break;
+    } catch (e) {
+      const isCodeConflict =
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === "P2002" &&
+        (e.meta?.target as string[])?.includes("code");
+      if (!isCodeConflict || attempt === 9) throw e;
+    }
+  }
+
+  if (!order) throw new Error("Não foi possível criar o pedido");
 
   await prisma.orderStatusHistory.create({
     data: {
