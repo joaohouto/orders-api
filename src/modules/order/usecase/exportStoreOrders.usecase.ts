@@ -1,3 +1,4 @@
+import { OrderStatus } from "@prisma/client";
 import { Parser } from "json2csv";
 
 import { prisma } from "@/prisma/client";
@@ -16,9 +17,17 @@ function formatDate(date: Date): string {
   return date.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
 }
 
+export interface ExportStoreOrdersFilters {
+  startDate?: Date;
+  endDate?: Date;
+  status?: OrderStatus[];
+  buyerName?: string;
+}
+
 export async function exportStoreOrdersUseCase(
   storeSlug: string,
-  userId: string
+  userId: string,
+  filters: ExportStoreOrdersFilters = {}
 ) {
   const store = await prisma.store.findUnique({
     where: {
@@ -39,6 +48,18 @@ export async function exportStoreOrdersUseCase(
   const orders = await prisma.order.findMany({
     where: {
       storeId: store.id,
+      ...(filters.startDate || filters.endDate
+        ? {
+            createdAt: {
+              ...(filters.startDate ? { gte: filters.startDate } : {}),
+              ...(filters.endDate ? { lte: filters.endDate } : {}),
+            },
+          }
+        : {}),
+      ...(filters.status?.length ? { status: { in: filters.status } } : {}),
+      ...(filters.buyerName
+        ? { buyerName: { contains: filters.buyerName, mode: "insensitive" as const } }
+        : {}),
     },
     include: {
       user: {
