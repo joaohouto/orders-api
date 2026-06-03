@@ -3,14 +3,16 @@ import { getProducts } from "../usecase/getProducts.usecase";
 
 export const getProductsController = async (req: Request, res: Response) => {
   const { storeSlug } = req.params;
-  const { page = "1", limit = "10", q } = req.query;
+  const { page, limit, q, includeInactive } = req.query;
 
   try {
     const result = await getProducts({
       storeSlug,
-      page: parseInt(page as string),
-      limit: parseInt(limit as string),
+      ...(page && limit
+        ? { page: parseInt(page as string), limit: parseInt(limit as string) }
+        : {}),
       search: q as string | undefined,
+      includeInactive: includeInactive === "true",
     });
 
     res.json(result);

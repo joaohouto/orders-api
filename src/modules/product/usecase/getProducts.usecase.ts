@@ -6,15 +6,18 @@ interface ListProductsParams {
   page?: number;
   limit?: number;
   search?: string;
+  includeInactive?: boolean;
 }
 
 export async function getProducts({
   storeSlug,
-  page = 1,
-  limit = 10,
+  page,
+  limit,
   search,
+  includeInactive = false,
 }: ListProductsParams) {
-  const skip = (page - 1) * limit;
+  const paginated = page !== undefined && limit !== undefined;
+  const skip = paginated ? (page! - 1) * limit! : undefined;
 
   const store = await prisma.store.findUnique({
     where: {
@@ -27,7 +30,7 @@ export async function getProducts({
   const where = {
     storeId: store.id,
     deletedAt: null,
-    isActive: true,
+    ...(includeInactive ? {} : { isActive: true }),
     name: search
       ? { contains: search, mode: Prisma.QueryMode.insensitive }
       : undefined,
@@ -42,20 +45,21 @@ export async function getProducts({
           include: { variations: { where: { deletedAt: null } } },
         },
       },
-      skip,
-      take: limit,
-      orderBy: { createdAt: "desc" },
+      ...(paginated ? { skip, take: limit } : {}),
+      orderBy: { position: "asc" },
     }),
     prisma.product.count({ where }),
   ]);
 
   return {
     data: products,
-    pagination: {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit),
-    },
+    pagination: paginated
+      ? {
+          page: page!,
+          limit: limit!,
+          total,
+          pages: Math.ceil(total / limit!),
+        }
+      : { total },
   };
 }

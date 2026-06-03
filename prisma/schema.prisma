@@ -71,6 +71,7 @@ model Product {
   description     String?
   price           Decimal
   images          String[]
+  position        Int              @default(0)
   storeId         String
   store           Store            @relation(fields: [storeId], references: [id])
   variationGroups VariationGroup[]
