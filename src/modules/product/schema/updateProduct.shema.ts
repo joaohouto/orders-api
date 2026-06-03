@@ -15,6 +15,7 @@ export const updateProductSchema = z.object({
   slug: z.string().min(1),
   description: z.string().min(1),
   price: z.number().positive(),
+  memberPrice: z.number().positive().optional().nullable(),
   images: z.array(z.string().url()).min(1).max(10),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),

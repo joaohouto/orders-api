@@ -24,6 +24,10 @@ export async function createOrder(
 
   if (!user) throw new Error("Usuário não encontrado");
 
+  const activeMembership = await prisma.membership.findFirst({
+    where: { userId, storeId, status: "ACTIVE" },
+  });
+
   let totalPrice = new Decimal(0);
   const orderItems = [];
 
@@ -55,7 +59,11 @@ export async function createOrder(
       (sum, v) => sum.add(v.priceAdjustment),
       new Decimal(0),
     );
-    const unitPrice = product.price.add(adjustment);
+
+    const basePrice = (activeMembership && product.memberPrice)
+      ? product.memberPrice
+      : product.price;
+    const unitPrice = basePrice.add(adjustment);
 
     totalPrice = totalPrice.add(unitPrice.mul(item.quantity));
 

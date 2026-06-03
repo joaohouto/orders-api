@@ -15,6 +15,7 @@ export const schema = z.object({
   slug: z.string().min(1),
   description: z.string().optional(),
   price: z.number().positive(),
+  memberPrice: z.number().positive().optional().nullable(),
   images: z.array(z.string().url()).max(10).optional(),
   acceptOrderNote: z.boolean(),
   isActive: z.boolean(),

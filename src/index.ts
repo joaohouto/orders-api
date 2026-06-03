@@ -11,6 +11,8 @@ import productRoutes from "@/modules/product/product.routes";
 import orderRoutes from "@/modules/order/order.routes";
 import fileRoutes from "@/modules/file/file.routes";
 import paymentRoutes from "@/modules/payment/payment.routes";
+import associationRoutes from "@/modules/association/association.routes";
+import membershipRoutes from "@/modules/membership/membership.routes";
 import { rateLimiter } from "@/middleware/rateLimit";
 
 dotenv.config();
@@ -54,6 +56,8 @@ app.use("/", collaboratorRoutes);
 app.use("/", productRoutes);
 app.use("/", orderRoutes);
 app.use("/", paymentRoutes);
+app.use("/", associationRoutes);
+app.use("/", membershipRoutes);
 app.use("/", fileRoutes);
 
 app.listen(3000, () => console.log("🚀 Server on http://localhost:3000"));

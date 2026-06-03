@@ -21,6 +21,7 @@ model User {
   orders             Order[]
   OrderStatusHistory OrderStatusHistory[]
   files              File[]
+  memberships        Membership[]
 }
 
 model Store {
@@ -40,7 +41,9 @@ model Store {
 
   collaborators Collaborator[]
 
-  products Product[] // editado pelo joão
+  products         Product[] // editado pelo joão
+  associationPlans AssociationPlan[]
+  memberships      Membership[]
 
   createdAt DateTime @default(now())
   orders    Order[]
@@ -75,6 +78,7 @@ model Product {
   storeId         String
   store           Store            @relation(fields: [storeId], references: [id])
   variationGroups VariationGroup[]
+  memberPrice     Decimal?
   acceptOrderNote Boolean          @default(false)
   isActive        Boolean          @default(true)
   soldOutAt       DateTime?
@@ -202,4 +206,40 @@ model Payment {
   updatedAt         DateTime @updatedAt
 
   order Order @relation(fields: [orderId], references: [id])
+}
+
+model AssociationPlan {
+  id             String       @id @default(cuid())
+  storeId        String
+  store          Store        @relation(fields: [storeId], references: [id])
+  name           String
+  description    String?
+  price          Decimal
+  durationMonths Int
+  isActive       Boolean      @default(true)
+  memberships    Membership[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Membership {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  storeId   String
+  store     Store            @relation(fields: [storeId], references: [id])
+  planId    String
+  plan      AssociationPlan  @relation(fields: [planId], references: [id])
+  status    MembershipStatus @default(PENDING)
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+enum MembershipStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  CANCELED
 }

@@ -5,7 +5,13 @@ export const updateProfileSchema = z.object({
 
   phone: z
     .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, "Telefone inválido")
+    .refine(
+      (v) => {
+        const digits = v.replace(/\D/g, "");
+        return digits.length >= 10 && digits.length <= 11;
+      },
+      "Telefone inválido",
+    )
     .optional(),
 
   document: z

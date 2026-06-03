@@ -60,6 +60,7 @@ export async function updateProduct({
         name: data.name,
         slug: data.slug,
         price: new Decimal(data.price),
+        memberPrice: data.memberPrice != null ? new Decimal(data.memberPrice) : null,
         images: data.images,
         isActive: data.isActive,
         soldOutAt: data.soldOutAt ?? null,
