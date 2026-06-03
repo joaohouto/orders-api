@@ -4,10 +4,12 @@ import { listAssociationPlansController } from "./controller/listAssociationPlan
 import { createAssociationPlanController } from "./controller/createAssociationPlan.controller";
 import { updateAssociationPlanController } from "./controller/updateAssociationPlan.controller";
 import { deleteAssociationPlanController } from "./controller/deleteAssociationPlan.controller";
+import { getAssociationPlanController } from "./controller/getAssociationPlan.controller";
 
 const router = Router();
 
 router.get("/stores/:storeSlug/association-plans", listAssociationPlansController);
+router.get("/association-plans/:planId", getAssociationPlanController);
 router.post("/stores/:storeId/association-plans", authMiddleware, createAssociationPlanController);
 router.patch("/association-plans/:planId", authMiddleware, updateAssociationPlanController);
 router.delete("/association-plans/:planId", authMiddleware, deleteAssociationPlanController);
