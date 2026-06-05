@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { CollaboratorRoles } from "@/shared/enums/collaboratorRole";
+import { ForbiddenError } from "@/shared/errors";
 import { Decimal } from "@prisma/client/runtime/library";
 import { CreateProductInput } from "../schema/createProduct.schema";
 
@@ -34,7 +35,7 @@ export async function createProduct({
   });
 
   if (!isOwner && !isEditor) {
-    throw new Error("Sem permissão para criar produto");
+    throw new ForbiddenError("Sem permissão para criar produto");
   }
 
   const slugInUse = await prisma.product.findFirst({ where: { slug, deletedAt: null } });

@@ -3,6 +3,7 @@ import { generateOrderCode } from "@/lib/orderCode";
 import { sendOrderEmail } from "@/lib/resend";
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 import { Decimal } from "@prisma/client/runtime/library";
 import { CreateGuestOrderInput } from "../schema/createGuestOrder.schema";
 
@@ -25,7 +26,7 @@ export async function createGuestOrder(
     allowedRoles: ["OWNER", "EDIT"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   // Find or create user by email for order linking
   let linkedUserId: string | undefined;

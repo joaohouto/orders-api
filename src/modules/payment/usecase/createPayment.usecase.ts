@@ -1,4 +1,5 @@
 import { Preference } from "mercadopago";
+import { ForbiddenError } from "@/shared/errors";
 
 import { mercadopagoClient } from "@/lib/mercadopago";
 import { prisma } from "@/prisma/client";
@@ -32,7 +33,7 @@ export async function createPayment({ orderId, requesterId }: ICreatePayment) {
   }
 
   if (order.userId !== requesterId) {
-    throw new Error("Você não tem permissão para pagar este pedido");
+    throw new ForbiddenError("Você não tem permissão para pagar este pedido");
   }
 
   if (order.status !== "PENDING") {

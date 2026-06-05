@@ -1,6 +1,7 @@
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
 import { addMonths } from "@/lib/dateUtils";
+import { ForbiddenError } from "@/shared/errors";
 
 export type MembershipStatusUpdate = "ACTIVE" | "CANCELED" | "EXPIRED";
 
@@ -20,7 +21,7 @@ export async function updateMembershipStatus(
     userId,
     allowedRoles: ["OWNER", "EDIT"],
   });
-  if (!allowed) throw new Error("Acesso negado");
+  if (!allowed) throw new ForbiddenError("Acesso negado");
 
   const now = new Date();
   const updateData: {

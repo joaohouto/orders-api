@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 import { expireOverdueMemberships } from "@/lib/expireMemberships";
 
 export async function listMemberships(storeSlug: string, userId: string) {
@@ -11,7 +12,7 @@ export async function listMemberships(storeSlug: string, userId: string) {
     userId,
     allowedRoles: ["OWNER", "EDIT", "VIEW"],
   });
-  if (!allowed) throw new Error("Acesso negado");
+  if (!allowed) throw new ForbiddenError("Acesso negado");
 
   await expireOverdueMemberships({ storeId: store.id });
 

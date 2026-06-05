@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { ForbiddenError } from "@/shared/errors";
 
 interface AddCollaboratorDTO {
   storeSlug: string;
@@ -28,7 +29,7 @@ export async function addCollaborator({
   });
 
   if (!store || store.ownerId !== requesterId) {
-    throw new Error(
+    throw new ForbiddenError(
       "Acesso negado. Apenas o dono pode adicionar colaboradores."
     );
   }

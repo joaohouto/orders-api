@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { createGuestOrder } from "../usecase/createGuestOrder.usecase";
 import { createGuestOrderSchema } from "../schema/createGuestOrder.schema";
+import { handleError } from "@/shared/handleError";
 
 export async function createGuestOrderController(req: Request, res: Response) {
   const user = req.user;
@@ -22,8 +23,8 @@ export async function createGuestOrderController(req: Request, res: Response) {
     const order = await createGuestOrder(parsed.data, storeSlug, user.id);
     res.status(201).json(order);
     return;
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err) {
+    handleError(res, err);
     return;
   }
 }

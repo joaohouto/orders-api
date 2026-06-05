@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { QrCodePix } from "qrcode-pix";
+import { ForbiddenError } from "@/shared/errors";
 
 export async function generatePix(orderId: string, userId: string) {
   const order = await prisma.order.findUnique({
@@ -18,7 +19,7 @@ export async function generatePix(orderId: string, userId: string) {
   }
 
   if (order.userId !== userId) {
-    throw new Error("Você não tem permissão para pagar este pedido");
+    throw new ForbiddenError("Você não tem permissão para pagar este pedido");
   }
 
   if (order.status !== "PENDING") {

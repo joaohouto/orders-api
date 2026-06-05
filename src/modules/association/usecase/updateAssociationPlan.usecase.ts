@@ -1,6 +1,7 @@
 import { Decimal } from "@prisma/client/runtime/library";
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 import { UpdateAssociationPlanInput } from "../schema/updateAssociationPlan.schema";
 
 export async function updateAssociationPlan(
@@ -16,7 +17,7 @@ export async function updateAssociationPlan(
     userId,
     allowedRoles: ["OWNER", "EDIT"],
   });
-  if (!allowed) throw new Error("Acesso negado");
+  if (!allowed) throw new ForbiddenError("Acesso negado");
 
   return prisma.associationPlan.update({
     where: { id: planId },

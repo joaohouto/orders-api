@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { QrCodePix } from "qrcode-pix";
+import { ForbiddenError } from "@/shared/errors";
 
 export async function generateMembershipPix(membershipId: string, userId: string) {
   const membership = await prisma.membership.findUnique({
@@ -11,7 +12,7 @@ export async function generateMembershipPix(membershipId: string, userId: string
   });
 
   if (!membership) throw new Error("Associação não encontrada");
-  if (membership.userId !== userId) throw new Error("Você não tem permissão para pagar esta associação");
+  if (membership.userId !== userId) throw new ForbiddenError("Você não tem permissão para pagar esta associação");
   if (membership.status !== "PENDING") throw new Error("Esta associação não pode ser paga");
   if (!membership.store.pix) throw new Error("Não há chave PIX cadastrada para esta loja");
 

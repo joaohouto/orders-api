@@ -2,6 +2,7 @@ import { Parser } from "json2csv";
 
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "Pendente",
@@ -36,7 +37,7 @@ export async function exportStoreOrdersUseCase(
     allowedRoles: ["OWNER", "EDIT", "VIEW"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   const endOfDay = endDate ? new Date(endDate) : undefined;
   if (endOfDay) endOfDay.setHours(23, 59, 59, 999);

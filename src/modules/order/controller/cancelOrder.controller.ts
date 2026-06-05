@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { cancelOrderUseCase } from "../usecase/cancelOrder.usecase";
+import { handleError } from "@/shared/handleError";
 
 export async function cancelOrderController(req: Request, res: Response) {
   const userId = req.user?.id;
@@ -15,8 +16,8 @@ export async function cancelOrderController(req: Request, res: Response) {
     res.json(order);
 
     return;
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err) {
+    handleError(res, err);
     return;
   }
 }

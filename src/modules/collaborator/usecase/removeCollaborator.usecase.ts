@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { ForbiddenError } from "@/shared/errors";
 
 interface RemoveCollaboratorDTO {
   storeSlug: string;
@@ -18,7 +19,7 @@ export async function removeCollaborator({
   if (!store) throw new Error("Loja não encontrada");
 
   if (store.ownerId !== requesterId)
-    throw new Error("Apenas o dono pode remover colaboradores");
+    throw new ForbiddenError("Apenas o dono pode remover colaboradores");
 
   // Garante que não tá tentando remover ele mesmo como owner
   if (userIdToRemove === requesterId) {

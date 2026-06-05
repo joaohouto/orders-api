@@ -1,6 +1,7 @@
 import { UpdateStoreInput } from "../schema/updateStore.schema";
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 
 interface Params {
   storeId: string;
@@ -15,7 +16,7 @@ export async function updateStore({ storeId, requesterId, data }: Params) {
     allowedRoles: ["OWNER"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   const existing = await prisma.store.findFirst({
     where: { slug: data.slug.toLowerCase(), NOT: { id: storeId } },

@@ -1,6 +1,7 @@
 import { prisma } from "@/prisma/client";
 import { UpdateProductInput } from "../schema/updateProduct.shema";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 import { Decimal } from "@prisma/client/runtime/library";
 
 interface Params {
@@ -30,7 +31,7 @@ export async function updateProduct({
     allowedRoles: ["OWNER", "EDIT"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   const product = await prisma.product.findFirst({
     where: { storeId: store.id, slug: productSlug, deletedAt: null },

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { updateStore } from "../usecase/updateStore.usecase";
 import { updateStoreSchema } from "../schema/updateStore.schema";
+import { handleError } from "@/shared/handleError";
 
 export const updateStoreController = async (req: Request, res: Response) => {
   const { storeId } = req.params;
@@ -29,13 +30,8 @@ export const updateStoreController = async (req: Request, res: Response) => {
     res.json(updated);
 
     return;
-  } catch (err: any) {
-    const msg = err.message.includes("Slug")
-      ? err.message
-      : "Erro ao atualizar loja";
-
-    res.status(400).json({ msg });
-
+  } catch (err) {
+    handleError(res, err);
     return;
   }
 };

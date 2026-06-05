@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { updateAssociationPlan } from "../usecase/updateAssociationPlan.usecase";
 import { updateAssociationPlanSchema } from "../schema/updateAssociationPlan.schema";
+import { handleError } from "@/shared/handleError";
 
 export async function updateAssociationPlanController(req: Request, res: Response) {
   const user = req.user;
@@ -20,7 +21,7 @@ export async function updateAssociationPlanController(req: Request, res: Respons
   try {
     const plan = await updateAssociationPlan(planId, parsed.data, user.id);
     res.json(plan);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err) {
+    handleError(res, err);
   }
 }

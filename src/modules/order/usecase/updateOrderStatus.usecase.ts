@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 
 import type { OrderStatus } from "@/shared/enums/orderStatus";
 
@@ -23,7 +24,7 @@ export async function updateOrderStatusUseCase(
     allowedRoles: ["OWNER", "EDIT"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   // grava histórico de status
   await prisma.orderStatusHistory.create({

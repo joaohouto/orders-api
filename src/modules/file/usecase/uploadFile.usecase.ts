@@ -2,6 +2,8 @@ import { prisma } from "@/prisma/client";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { randomUUID } from "crypto";
 import mime from "mime";
+import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 
 type Params = {
   file: Express.Multer.File;
@@ -36,6 +38,15 @@ export async function uploadFileUsecase({
 }: Params) {
   if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
     throw new Error("Tipo de arquivo não permitido. Envie apenas imagens.");
+  }
+
+  if (storeId) {
+    const allowed = await checkPermission({
+      storeId,
+      userId: uploadedById,
+      allowedRoles: ["OWNER", "EDIT"],
+    });
+    if (!allowed) throw new ForbiddenError("Sem permissão para enviar arquivo para esta loja");
   }
 
   const fileExtension = mime.getExtension(file.mimetype);

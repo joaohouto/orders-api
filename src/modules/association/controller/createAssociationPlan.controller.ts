@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { createAssociationPlan } from "../usecase/createAssociationPlan.usecase";
 import { createAssociationPlanSchema } from "../schema/createAssociationPlan.schema";
+import { handleError } from "@/shared/handleError";
 
 export async function createAssociationPlanController(req: Request, res: Response) {
   const user = req.user;
@@ -20,7 +21,7 @@ export async function createAssociationPlanController(req: Request, res: Respons
   try {
     const plan = await createAssociationPlan(parsed.data, storeId, user.id);
     res.status(201).json(plan);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err) {
+    handleError(res, err);
   }
 }

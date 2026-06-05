@@ -1,5 +1,6 @@
 import { checkPermission } from "@/core/permission/checkPermission";
 import { prisma } from "@/prisma/client";
+import { ForbiddenError } from "@/shared/errors";
 
 export async function deleteProduct(productId: string, requesterId: string) {
   // Verifica se o user tem permissão (dono ou editor)
@@ -18,7 +19,7 @@ export async function deleteProduct(productId: string, requesterId: string) {
     allowedRoles: ["OWNER", "EDIT"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   const now = new Date();
 

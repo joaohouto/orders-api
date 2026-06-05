@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { createProduct } from "../usecase/createProduct.usecase";
 import { schema } from "../schema/createProduct.schema";
+import { handleError } from "@/shared/handleError";
 
 export const createProductController = async (req: Request, res: Response) => {
   const user = req.user;
@@ -26,7 +27,7 @@ export const createProductController = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(product);
-  } catch (err: any) {
-    res.status(500).json({ msg: err.message });
+  } catch (err) {
+    handleError(res, err);
   }
 };

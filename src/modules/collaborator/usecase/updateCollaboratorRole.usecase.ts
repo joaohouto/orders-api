@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { ForbiddenError } from "@/shared/errors";
 
 import type { CollaboratorRole } from "@/shared/enums/collaboratorRole";
 
@@ -21,10 +22,10 @@ export async function updateCollaboratorRole({
 
   if (!store) throw new Error("Loja não encontrada");
   if (store.ownerId !== requesterId)
-    throw new Error("Apenas o dono pode alterar permissões");
+    throw new ForbiddenError("Apenas o dono pode alterar permissões");
 
   if (userIdToUpdate === requesterId) {
-    throw new Error("O dono não pode alterar a própria permissão");
+    throw new ForbiddenError("O dono não pode alterar a própria permissão");
   }
 
   const collaborator = await prisma.collaborator.findUnique({

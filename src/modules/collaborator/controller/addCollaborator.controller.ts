@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { addCollaborator } from "../usecase/addCollaborator.usecase";
+import { handleError } from "@/shared/handleError";
 
 export const addCollaboratorController = async (
   req: Request,
@@ -25,8 +26,8 @@ export const addCollaboratorController = async (
 
     res.status(201).json(result);
     return;
-  } catch (err: any) {
-    res.status(400).json({ msg: err.message });
+  } catch (err) {
+    handleError(res, err);
     return;
   }
 };

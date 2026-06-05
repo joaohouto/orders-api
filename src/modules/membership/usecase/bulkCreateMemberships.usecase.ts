@@ -2,6 +2,7 @@ import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
 import { addMonths } from "@/lib/dateUtils";
 import { BulkCreateMembershipsInput } from "../schema/bulkCreateMemberships.schema";
+import { ForbiddenError } from "@/shared/errors";
 
 type ResultAction = "created" | "confirmed" | "skipped";
 
@@ -24,7 +25,7 @@ export async function bulkCreateMemberships(
     userId: requesterId,
     allowedRoles: ["OWNER", "EDIT"],
   });
-  if (!allowed) throw new Error("Acesso negado");
+  if (!allowed) throw new ForbiddenError("Acesso negado");
 
   const plan = await prisma.associationPlan.findFirst({
     where: { id: data.planId, storeId: store.id },

@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/client";
+import { ForbiddenError } from "@/shared/errors";
 
 interface ListCollaboratorsDTO {
   storeSlug: string;
@@ -30,7 +31,7 @@ export async function listCollaborators({
   );
 
   if (!isOwner && !isCollaborator) {
-    throw new Error("Acesso negado");
+    throw new ForbiddenError("Acesso negado");
   }
 
   const list = store.collaborators.map((c) => ({

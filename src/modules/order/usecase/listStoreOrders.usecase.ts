@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { ForbiddenError } from "@/shared/errors";
 
 export async function listStoreOrders(storeSlug: string, userId: string) {
   const store = await prisma.store.findUnique({
@@ -16,7 +17,7 @@ export async function listStoreOrders(storeSlug: string, userId: string) {
     allowedRoles: ["OWNER", "EDIT", "VIEW"],
   });
 
-  if (!hasPermission) throw new Error("Sem permissão");
+  if (!hasPermission) throw new ForbiddenError("Sem permissão");
 
   const orders = await prisma.order.findMany({
     where: {

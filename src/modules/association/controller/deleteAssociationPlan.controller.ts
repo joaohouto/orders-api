@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { deleteAssociationPlan } from "../usecase/deleteAssociationPlan.usecase";
+import { handleError } from "@/shared/handleError";
 
 export async function deleteAssociationPlanController(req: Request, res: Response) {
   const user = req.user;
@@ -13,7 +14,7 @@ export async function deleteAssociationPlanController(req: Request, res: Respons
   try {
     const plan = await deleteAssociationPlan(planId, user.id);
     res.json(plan);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+  } catch (err) {
+    handleError(res, err);
   }
 }
