@@ -18,7 +18,9 @@ function formatDate(date: Date): string {
 
 export async function exportStoreOrdersUseCase(
   storeSlug: string,
-  userId: string
+  userId: string,
+  startDate?: Date,
+  endDate?: Date,
 ) {
   const store = await prisma.store.findUnique({
     where: {
@@ -36,9 +38,18 @@ export async function exportStoreOrdersUseCase(
 
   if (!hasPermission) throw new Error("Sem permissão");
 
+  const endOfDay = endDate ? new Date(endDate) : undefined;
+  if (endOfDay) endOfDay.setHours(23, 59, 59, 999);
+
   const orders = await prisma.order.findMany({
     where: {
       storeId: store.id,
+      ...(startDate || endOfDay ? {
+        createdAt: {
+          ...(startDate ? { gte: startDate } : {}),
+          ...(endOfDay ? { lte: endOfDay } : {}),
+        },
+      } : {}),
     },
     include: {
       user: {

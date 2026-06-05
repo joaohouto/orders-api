@@ -5,7 +5,7 @@ export async function getAssociationPlan(planId: string) {
     where: { id: planId, isActive: true },
     include: {
       store: {
-        select: { id: true, name: true, slug: true, icon: true, banner: true, instagram: true },
+        select: { id: true, name: true, slug: true, icon: true, banner: true, instagram: true, accentColor: true },
       },
       _count: { select: { memberships: { where: { status: "ACTIVE" } } } },
     },

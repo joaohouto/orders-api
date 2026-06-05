@@ -7,7 +7,16 @@ const variationSchema = z.object({
 
 const variationGroupSchema = z.object({
   name: z.string().min(1),
-  variations: z.array(variationSchema).min(1),
+  type: z.enum(["select", "text"]).default("select"),
+  variations: z.array(variationSchema).default([]),
+}).superRefine((data, ctx) => {
+  if (data.type !== "text" && data.variations.length === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Array must contain at least 1 element(s)",
+      path: ["variations"],
+    });
+  }
 });
 
 export const schema = z.object({

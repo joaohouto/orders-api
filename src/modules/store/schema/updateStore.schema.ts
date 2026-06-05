@@ -9,6 +9,7 @@ export const updateStoreSchema = z.object({
   pix: z.string().min(1).optional(),
   city: z.string().min(1).optional(),
   postalCode: z.string().min(1).optional(),
+  accentColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Cor inválida").optional().nullable(),
 });
 
 export type UpdateStoreInput = z.infer<typeof updateStoreSchema>;

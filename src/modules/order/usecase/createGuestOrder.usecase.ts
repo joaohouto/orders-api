@@ -27,12 +27,23 @@ export async function createGuestOrder(
 
   if (!hasPermission) throw new Error("Sem permissão");
 
+  // Find or create user by email for order linking
+  let linkedUserId: string | undefined;
+  if (buyerEmail) {
+    let linkedUser = await prisma.user.findUnique({ where: { email: buyerEmail } });
+    if (!linkedUser) {
+      linkedUser = await prisma.user.create({ data: { email: buyerEmail, name: buyerName } });
+    }
+    linkedUserId = linkedUser.id;
+  }
+
   let totalPrice = new Decimal(0);
   const orderItems = [];
 
   for (const item of items) {
     const product = await prisma.product.findFirst({
       where: { id: item.productId, storeId: store.id, deletedAt: null },
+      include: { variationGroups: true },
     });
 
     if (!product) throw new Error("Produto inválido");
@@ -58,9 +69,24 @@ export async function createGuestOrder(
       (sum, v) => sum.add(v.priceAdjustment),
       new Decimal(0),
     );
-    const unitPrice = product.price.add(adjustment);
+
+    // Admin can explicitly apply member price
+    const basePrice = (item.useMemberPrice && product.memberPrice)
+      ? product.memberPrice
+      : product.price;
+    const unitPrice = basePrice.add(adjustment);
 
     totalPrice = totalPrice.add(unitPrice.mul(item.quantity));
+
+    const textInputEntries = Object.entries(item.textInputs ?? {}).map(([groupId, value]) => {
+      const group = product.variationGroups.find((g) => g.id === groupId);
+      return {
+        variationId: null,
+        variationName: value,
+        variationGroup: group?.name ?? groupId,
+        textValue: value,
+      };
+    });
 
     orderItems.push({
       productId: product.id,
@@ -68,11 +94,15 @@ export async function createGuestOrder(
       unitPrice,
       quantity: item.quantity,
       note: item.note,
-      selectedVariations: variations.map((v) => ({
-        variationId: v.id,
-        variationName: v.name,
-        variationGroup: v.group.name,
-      })),
+      selectedVariations: [
+        ...variations.map((v) => ({
+          variationId: v.id,
+          variationName: v.name,
+          variationGroup: v.group.name,
+          textValue: null,
+        })),
+        ...textInputEntries,
+      ],
     });
   }
 
@@ -83,9 +113,10 @@ export async function createGuestOrder(
         data: {
           code: generateOrderCode(),
           storeId: store.id,
+          userId: linkedUserId,
           totalPrice,
           buyerName,
-          buyerPhone,
+          buyerPhone: buyerPhone ?? "",
           items: {
             create: orderItems.map(({ selectedVariations, ...item }) => ({
               ...item,

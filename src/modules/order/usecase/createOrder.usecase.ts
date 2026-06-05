@@ -24,8 +24,19 @@ export async function createOrder(
 
   if (!user) throw new Error("Usuário não encontrado");
 
-  const activeMembership = await prisma.membership.findFirst({
-    where: { userId, storeId, status: "ACTIVE" },
+  const gracePeriodStart = new Date();
+  gracePeriodStart.setDate(gracePeriodStart.getDate() - 7);
+
+  const eligibleMembership = await prisma.membership.findFirst({
+    where: {
+      userId,
+      storeId,
+      OR: [
+        { status: "ACTIVE" },
+        { status: "PENDING" },
+        { status: "EXPIRED", endDate: { gte: gracePeriodStart } },
+      ],
+    },
   });
 
   let totalPrice = new Decimal(0);
@@ -34,6 +45,7 @@ export async function createOrder(
   for (const item of items) {
     const product = await prisma.product.findFirst({
       where: { id: item.productId, storeId, deletedAt: null },
+      include: { variationGroups: true },
     });
 
     if (!product) throw new Error("Produto inválido");
@@ -60,12 +72,22 @@ export async function createOrder(
       new Decimal(0),
     );
 
-    const basePrice = (activeMembership && product.memberPrice)
+    const basePrice = (eligibleMembership && product.memberPrice)
       ? product.memberPrice
       : product.price;
     const unitPrice = basePrice.add(adjustment);
 
     totalPrice = totalPrice.add(unitPrice.mul(item.quantity));
+
+    const textInputEntries = Object.entries(item.textInputs ?? {}).map(([groupId, value]) => {
+      const group = product.variationGroups.find((g) => g.id === groupId);
+      return {
+        variationId: null,
+        variationName: value,
+        variationGroup: group?.name ?? groupId,
+        textValue: value,
+      };
+    });
 
     orderItems.push({
       productId: product.id,
@@ -73,11 +95,15 @@ export async function createOrder(
       unitPrice,
       quantity: item.quantity,
       note: item.note,
-      selectedVariations: variations.map((v) => ({
-        variationId: v.id,
-        variationName: v.name,
-        variationGroup: v.group.name,
-      })),
+      selectedVariations: [
+        ...variations.map((v) => ({
+          variationId: v.id,
+          variationName: v.name,
+          variationGroup: v.group.name,
+          textValue: null,
+        })),
+        ...textInputEntries,
+      ],
     });
   }
 

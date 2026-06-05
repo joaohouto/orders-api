@@ -21,7 +21,7 @@ export async function generateMembershipPix(membershipId: string, userId: string
     name: membership.store.owner.name ?? membership.store.name,
     city: membership.store.city,
     transactionId: membership.id.replace(/-/g, "").slice(0, 25),
-    message: `Associacao ${membership.plan.name}`,
+    message: `${membership.store.name} - ${membership.plan.name}`.slice(0, 35),
     cep: membership.store.postalCode,
     value: membership.plan.price.toNumber(),
   });

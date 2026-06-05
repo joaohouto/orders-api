@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { checkPermission } from "@/core/permission/checkPermission";
+import { expireOverdueMemberships } from "@/lib/expireMemberships";
 
 export async function listMemberships(storeSlug: string, userId: string) {
   const store = await prisma.store.findUnique({ where: { slug: storeSlug } });
@@ -11,6 +12,8 @@ export async function listMemberships(storeSlug: string, userId: string) {
     allowedRoles: ["OWNER", "EDIT", "VIEW"],
   });
   if (!allowed) throw new Error("Acesso negado");
+
+  await expireOverdueMemberships({ storeId: store.id });
 
   return prisma.membership.findMany({
     where: { storeId: store.id },

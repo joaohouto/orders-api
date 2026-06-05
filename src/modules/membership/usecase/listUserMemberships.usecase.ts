@@ -1,6 +1,9 @@
 import { prisma } from "@/prisma/client";
+import { expireOverdueMemberships } from "@/lib/expireMemberships";
 
 export async function listUserMemberships(userId: string) {
+  await expireOverdueMemberships({ userId });
+
   return prisma.membership.findMany({
     where: { userId },
     include: {

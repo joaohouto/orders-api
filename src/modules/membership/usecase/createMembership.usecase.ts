@@ -14,10 +14,23 @@ export async function createMembership(
   });
   if (!plan) throw new Error("Plano não encontrado ou inativo");
 
-  const existing = await prisma.membership.findFirst({
-    where: { userId, planId: data.planId, status: { in: ["PENDING", "ACTIVE"] } },
+  const pendingMembership = await prisma.membership.findFirst({
+    where: { userId, planId: data.planId, status: "PENDING" },
   });
-  if (existing) throw new Error("Você já possui uma associação ativa ou pendente neste plano");
+  if (pendingMembership) throw new Error("Você já possui uma associação aguardando pagamento neste plano");
+
+  const renewalThreshold = new Date();
+  renewalThreshold.setDate(renewalThreshold.getDate() + 7);
+
+  const activeMembership = await prisma.membership.findFirst({
+    where: {
+      userId,
+      planId: data.planId,
+      status: "ACTIVE",
+      endDate: { gt: renewalThreshold },
+    },
+  });
+  if (activeMembership) throw new Error("Você já possui uma associação ativa neste plano");
 
   const membership = await prisma.membership.create({
     data: {

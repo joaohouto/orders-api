@@ -8,19 +8,19 @@ export async function createOrderController(req: Request, res: Response) {
 
   if (!user) {
     res.status(401).json({ error: "Não autenticado" });
+    return;
   }
 
   const parsed = createOrderSchema.safeParse(req.body);
 
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
+    return;
   }
 
   try {
     const order = await createOrder(parsed.data, storeId, user.id);
-
     res.status(201).json(order);
-
     return;
   } catch (err: any) {
     res.status(400).json({ error: err.message });

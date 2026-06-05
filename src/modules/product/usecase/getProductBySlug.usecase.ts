@@ -17,7 +17,9 @@ export async function getProductBySlug(storeSlug: string, productSlug: string) {
       store: {
         select: {
           name: true,
+          slug: true,
           icon: true,
+          accentColor: true,
         },
       },
     },

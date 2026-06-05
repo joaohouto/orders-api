@@ -34,6 +34,7 @@ export async function updateStore({ storeId, requesterId, data }: Params) {
       pix: data.pix,
       city: data.city,
       postalCode: data.postalCode,
+      accentColor: data.accentColor ?? null,
     },
   });
 

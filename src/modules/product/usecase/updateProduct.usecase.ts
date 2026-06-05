@@ -69,6 +69,7 @@ export async function updateProduct({
         variationGroups: {
           create: data.variationGroups.map((g) => ({
             name: g.name,
+            type: g.type ?? "select",
             variations: {
               create: g.variations.map((v) => ({
                 name: v.name,
