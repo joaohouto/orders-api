@@ -29,7 +29,6 @@ const app = express();
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Permite requisições sem origin (ex: mobile, curl, server-to-server)
       if (
         !origin ||
         ALLOWED_ORIGINS.some((o) =>
